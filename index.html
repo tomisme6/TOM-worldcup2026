@@ -213,6 +213,10 @@
   .match-card.played::before  { background: var(--green); }
   .match-card.upcoming::before { background: var(--border2); }
   .match-card.upcoming { cursor: default; }
+  .match-card.correct { background: rgba(59,130,246,0.13); border-color: rgba(59,130,246,0.4); }
+  .match-card.correct::before { background: #3b82f6; }
+  .match-card.wrong   { background: rgba(248,113,113,0.10); border-color: rgba(248,113,113,0.35); }
+  .match-card.wrong::before   { background: var(--red); }
 
   /* ── META COL ── */
   .meta-col { text-align: center; }
@@ -237,6 +241,15 @@
   .score-col { text-align: center; }
   .score-final { font-size: 22px; font-weight: 700; color: var(--text); letter-spacing: .04em; }
   .score-final-label { font-size: 10px; color: var(--green); margin-top: 1px; }
+  .score-dual { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .score-real { font-size: 20px; font-weight: 700; color: var(--text); letter-spacing: .04em; }
+  .score-real-label { font-size: 9px; color: var(--green); letter-spacing: .04em; margin-bottom: 3px; }
+  .score-divider { width: 28px; height: 1px; background: var(--border2); margin: 1px 0; }
+  .score-pred-row { display: flex; flex-direction: column; align-items: center; gap: 1px; }
+  .score-pred-val { font-size: 13px; font-weight: 600; color: var(--text2); letter-spacing: .04em; }
+  .score-pred-label { font-size: 9px; color: var(--text3); }
+  .match-card.correct .score-pred-val { color: #3b82f6; }
+  .match-card.wrong   .score-pred-val { color: var(--red); }
 
   /* ── HIDDEN STATE ── */
   .pred-hidden {
@@ -536,10 +549,23 @@ function updateStats(data){
   `;
 }
 
+function isPredCorrect(m){
+  return m.played && m.score && m.pred && m.score === m.pred;
+}
+
 function buildScoreCol(m){
   if(m.played){
-    return `<div class="score-final">${m.score}</div>
-            <div class="score-final-label">✓ 終場</div>`;
+    const correct = isPredCorrect(m);
+    const predColor = correct ? '#3b82f6' : 'var(--red)';
+    return `<div class="score-dual">
+              <div class="score-real-label">✓ 終場</div>
+              <div class="score-real">${m.score}</div>
+              <div class="score-divider"></div>
+              <div class="score-pred-row">
+                <div class="score-pred-val">${m.pred}</div>
+                <div class="score-pred-label">${correct ? '✅ 預測命中' : '❌ 預測落空'}</div>
+              </div>
+            </div>`;
   }
   const rev = isRevealed(m);
   const hiddenDisplay  = rev ? 'none'  : 'flex';
@@ -621,8 +647,9 @@ function render(){
       matches.forEach(m => {
         const hn = m.hn.length > 4 ? `<span class="tname sm">${m.hn}</span>` : `<span class="tname">${m.hn}</span>`;
         const an = m.an.length > 4 ? `<span class="tname sm">${m.an}</span>` : `<span class="tname">${m.an}</span>`;
+        const resultCls = m.played ? (isPredCorrect(m) ? ' correct' : ' wrong') : '';
         html += `
-          <div class="match-card ${m.played?'played':'upcoming'}" data-id="${m.id}">
+          <div class="match-card ${m.played?'played':'upcoming'}${resultCls}" data-id="${m.id}">
             <div class="meta-col">
               <div class="grp-badge">${m.g}</div>
               <div class="venue-tag">${m.venue}</div>
