@@ -657,7 +657,61 @@ document.getElementById('group-tabs').addEventListener('click', e => {
 
 document.getElementById('search').addEventListener('input', render);
 
+// ── 即時比分：football-data.org API ──
+const API_TOKEN = 'f7fdbdfaf07a43fdb32d6d6d59993b0c';
+
+// 英文隊名 → 中文隊名對應表
+const TEAM_MAP = {
+  'Mexico':'墨西哥','South Africa':'南Africa','Korea Republic':'南韓','Czechia':'捷克',
+  'Canada':'加拿大','Bosnia and Herzegovina':'波赫','Qatar':'卡達','Switzerland':'瑞士',
+  'Brazil':'巴西','Morocco':'摩洛哥','Haiti':'海地','Scotland':'蘇格蘭',
+  'United States':'美國','Paraguay':'巴拉圭','Australia':'澳洲','Türkiye':'土耳其',
+  'Germany':'德國','Curaçao':'庫拉索','Ivory Coast':'象牙海岸','Ecuador':'厄瓜多',
+  'Netherlands':'荷蘭','Japan':'日本','Sweden':'瑞典','Tunisia':'突尼西亞',
+  'Belgium':'比利時','Egypt':'埃及','Iran':'伊朗','New Zealand':'紐西蘭',
+  'Spain':'西班牙','Cape Verde':'維德角','Saudi Arabia':'沙烏地','Uruguay':'烏拉圭',
+  'France':'法國','Senegal':'塞內加爾','Iraq':'伊拉克','Norway':'挪威',
+  'Argentina':'阿根廷','Algeria':'阿爾及利亞','Austria':'奧地利','Jordan':'約旦',
+  'Portugal':'葡萄牙','DR Congo':'剛果','Uzbekistan':'烏茲別克','Colombia':'哥倫比亞',
+  'England':'英格蘭','Croatia':'克羅埃西亞','Ghana':'迦納','Panama':'巴拿馬',
+  'South Korea':'南韓','Côte d\'Ivoire':'象牙海岸','Bosnia-Herzegovina':'波赫',
+};
+
+async function fetchLiveScores() {
+  try {
+    const res = await fetch('https://api.football-data.org/v4/competitions/WC/matches?status=FINISHED', {
+      headers: { 'X-Auth-Token': API_TOKEN }
+    });
+    if (!res.ok) return;
+    const data = await res.json();
+    const apiMatches = data.matches || [];
+
+    let updated = false;
+    apiMatches.forEach(am => {
+      const hName = TEAM_MAP[am.homeTeam.name] || am.homeTeam.name;
+      const aName = TEAM_MAP[am.awayTeam.name] || am.awayTeam.name;
+      const hGoals = am.score.fullTime.home;
+      const aGoals = am.score.fullTime.away;
+      if (hGoals === null || aGoals === null) return;
+
+      const match = MATCHES.find(m => m.hn === hName && m.an === aName);
+      if (match && !match.played) {
+        match.played = true;
+        match.score = `${hGoals}–${aGoals}`;
+        updated = true;
+      }
+    });
+
+    if (updated) render();
+  } catch(e) {
+    // 靜默失敗，不影響頁面顯示
+  }
+}
+
 render();
+fetchLiveScores();
+// 每 5 分鐘自動刷新一次
+setInterval(fetchLiveScores, 5 * 60 * 1000);
 </script>
 </body>
 </html>
