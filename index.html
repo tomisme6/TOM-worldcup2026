@@ -300,6 +300,29 @@
   .analysis-col.revealed .note-hidden { display: none; }
   .analysis-col.revealed .note-shown  { display: block; }
 
+  /* ── ODDS ROW ── */
+  .odds-row {
+    grid-column: 1 / -1;
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 0 0; border-top: 1px solid var(--border);
+    margin-top: 2px;
+  }
+  .odds-label { font-size: 9px; color: var(--text3); letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; }
+  .odds-bar { flex: 1; display: flex; height: 14px; border-radius: 4px; overflow: hidden; gap: 1px; }
+  .odds-seg { display: flex; align-items: center; justify-content: center;
+    font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.85);
+    transition: width .5s ease; overflow: hidden; white-space: nowrap; min-width: 0; }
+  .odds-seg-h { background: rgba(34,197,94,0.55); }
+  .odds-seg-d { background: rgba(251,191,36,0.45); }
+  .odds-seg-a { background: rgba(248,113,113,0.50); }
+  .odds-align {
+    font-size: 9px; font-weight: 700; padding: 2px 7px;
+    border-radius: 4px; white-space: nowrap;
+  }
+  .odds-align.with  { background: rgba(59,130,246,0.18); color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); }
+  .odds-align.against { background: rgba(248,113,113,0.15); color: #fca5a5; border: 1px solid rgba(248,113,113,0.25); }
+  .odds-align.neutral { background: rgba(251,191,36,0.12); color: var(--yellow); border: 1px solid rgba(251,191,36,0.2); }
+
   /* ── EMPTY ── */
   .no-results { text-align: center; padding: 48px 20px; color: var(--text3); font-size: 14px; }
 
@@ -658,6 +681,7 @@ function render(){
             <div class="score-col">${buildScoreCol(m)}</div>
             <div class="team-away"><span class="flag">${m.af}</span>${an}</div>
             ${buildAnalysisCol(m)}
+            ${!m.played ? buildOddsRow(m) : ''}
           </div>`;
       });
     });
@@ -683,6 +707,104 @@ document.getElementById('group-tabs').addEventListener('click', e => {
 });
 
 document.getElementById('search').addEventListener('input', render);
+
+// ── 賭盤資料 ──
+const ODDS_API_KEY = '427c5f5a3dc3d3bf9e6b7fac893215a6';
+const ODDS_DATA = {}; // key: "主隊|客隊" → {h, d, a} 隱含機率 %
+
+// 英文隊名（賭盤 API 格式）→ 中文
+const ODDS_TEAM_MAP = {
+  'Mexico':'墨西哥','South Africa':'南非','South Korea':'南韓','Czechia':'捷克',
+  'Canada':'加拿大','Bosnia & Herzegovina':'波赫','Bosnia and Herzegovina':'波赫',
+  'Qatar':'卡達','Switzerland':'瑞士','Brazil':'巴西','Morocco':'摩洛哥',
+  'Haiti':'海地','Scotland':'蘇格蘭','USA':'美國','United States':'美國',
+  'Paraguay':'巴拉圭','Australia':'澳洲','Turkey':'土耳其','Türkiye':'土耳其',
+  'Germany':'德國','Curaçao':'庫拉索','Ivory Coast':'象牙海岸',
+  "Côte d'Ivoire":'象牙海岸','Ecuador':'厄瓜多','Netherlands':'荷蘭',
+  'Japan':'日本','Sweden':'瑞典','Tunisia':'突尼西亞','Belgium':'比利時',
+  'Egypt':'埃及','Iran':'伊朗','New Zealand':'紐西蘭','Spain':'西班牙',
+  'Cape Verde':'維德角','Saudi Arabia':'沙烏地','Uruguay':'烏拉圭',
+  'France':'法國','Senegal':'塞內加爾','Iraq':'伊拉克','Norway':'挪威',
+  'Argentina':'阿根廷','Algeria':'阿爾及利亞','Austria':'奧地利','Jordan':'約旦',
+  'Portugal':'葡萄牙','DR Congo':'剛果','Congo DR':'剛果','Uzbekistan':'烏茲別克',
+  'Colombia':'哥倫比亞','England':'英格蘭','Croatia':'克羅埃西亞',
+  'Ghana':'迦納','Panama':'巴拿馬',
+};
+
+function decimalToProb(odds) { return 1 / odds; }
+
+function normalizeProbs(h, d, a) {
+  const total = h + d + a;
+  return {
+    h: Math.round(h / total * 100),
+    d: Math.round(d / total * 100),
+    a: Math.round(a / total * 100),
+  };
+}
+
+async function fetchOdds() {
+  try {
+    const apiUrl = 'https://api.the-odds-api.com/v4/sports/soccer_fifa_world_cup/odds/?apiKey=' + ODDS_API_KEY + '&regions=eu&markets=h2h&oddsFormat=decimal';
+    const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(apiUrl);
+    const res = await fetch(proxyUrl);
+    if (!res.ok) return;
+    const games = await res.json();
+    if (!Array.isArray(games)) return;
+
+    games.forEach(g => {
+      const hCn = ODDS_TEAM_MAP[g.home_team];
+      const aCn = ODDS_TEAM_MAP[g.away_team];
+      if (!hCn || !aCn) return;
+
+      // 取所有博彩公司平均
+      let sumH=0, sumD=0, sumA=0, cnt=0;
+      g.bookmakers.forEach(bk => {
+        const mkt = bk.markets.find(m => m.key === 'h2h');
+        if (!mkt) return;
+        mkt.outcomes.forEach(o => {
+          const cn = ODDS_TEAM_MAP[o.name] || o.name;
+          if (cn === hCn) sumH += decimalToProb(o.price);
+          else if (o.name === 'Draw') sumD += decimalToProb(o.price);
+          else if (cn === aCn) sumA += decimalToProb(o.price);
+        });
+        cnt++;
+      });
+      if (cnt === 0) return;
+      const probs = normalizeProbs(sumH/cnt, sumD/cnt, sumA/cnt);
+      ODDS_DATA[hCn + '|' + aCn] = probs;
+    });
+
+    render();
+  } catch(e) {}
+}
+
+function buildOddsRow(m) {
+  const key = m.hn + '|' + m.an;
+  const odds = ODDS_DATA[key];
+  if (!odds) return '';
+
+  // 判斷賭盤最大熱門
+  const fav = odds.h > odds.d && odds.h > odds.a ? 'H'
+            : odds.a > odds.d && odds.a > odds.h ? 'A' : 'D';
+  let alignCls, alignTxt;
+  if (m.tip === fav) {
+    alignCls = 'with'; alignTxt = '順賭盤';
+  } else if ((m.tip === 'H' && fav === 'A') || (m.tip === 'A' && fav === 'H')) {
+    alignCls = 'against'; alignTxt = '逆賭盤';
+  } else {
+    alignCls = 'neutral'; alignTxt = '小冷門';
+  }
+
+  return `<div class="odds-row">
+    <div class="odds-label">賭盤</div>
+    <div class="odds-bar">
+      <div class="odds-seg odds-seg-h" style="width:${odds.h}%">${odds.h >= 18 ? odds.h+'%' : ''}</div>
+      <div class="odds-seg odds-seg-d" style="width:${odds.d}%">${odds.d >= 15 ? odds.d+'%' : ''}</div>
+      <div class="odds-seg odds-seg-a" style="width:${odds.a}%">${odds.a >= 18 ? odds.a+'%' : ''}</div>
+    </div>
+    <div class="odds-align ${alignCls}">${alignTxt}</div>
+  </div>`;
+}
 
 // ── 即時比分：football-data.org API ──
 const API_TOKEN = 'f7fdbdfaf07a43fdb32d6d6d59993b0c';
@@ -739,8 +861,10 @@ async function fetchLiveScores() {
 
 render();
 fetchLiveScores();
+fetchOdds();
 // 每 5 分鐘自動刷新一次
 setInterval(fetchLiveScores, 5 * 60 * 1000);
+setInterval(fetchOdds, 5 * 60 * 1000);
 </script>
 </body>
 </html>
