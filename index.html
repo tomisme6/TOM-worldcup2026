@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TOM 2026 FIFA 世界盃預測</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Bebas+Neue&display=swap');
+
+  :root {
+    --bg: #0a0e1a;
+    --bg2: #111827;
+    --bg3: #1a2235;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #f0f2f8;
+    --text2: #8b9ab5;
+    --text3: #5a6a85;
+    --gold: #f0b429;
+    --green: #22c55e;
+    --green-bg: rgba(34,197,94,0.12);
+    --red: #f87171;
+    --red-bg: rgba(248,113,113,0.12);
+    --yellow: #fbbf24;
+    --yellow-bg: rgba(251,191,36,0.12);
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    background: linear-gradient(160deg, #0d1526 0%, #1a2840 50%, #0f1d35 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 36px 20px 28px;
+    text-align: center;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(240,180,41,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .14em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(32px, 7vw, 58px);
+    letter-spacing: .04em;
+    line-height: 1.05;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .hero h1 .tom { color: var(--gold); }
+  .hero h1 .wc  { color: var(--text); }
+  .hero-sub { font-size: 13px; color: var(--text2); margin-bottom: 20px; }
+  .hero-pills {
+    display: flex; justify-content: center;
+    flex-wrap: wrap; gap: 8px; margin-bottom: 14px;
+  }
+  .pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 12px;
+    border: 1px solid var(--border2); border-radius: 99px;
+    font-size: 12px; color: var(--text2);
+    background: rgba(255,255,255,0.04);
+  }
+  .pill b { color: var(--text); font-weight: 500; }
+  .live-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 16px;
+    background: rgba(240,180,41,0.15);
+    border: 1px solid rgba(240,180,41,0.3);
+    border-radius: 99px;
+    font-size: 12px; font-weight: 500; color: var(--gold);
+  }
+  .live-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--gold);
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.8)} }
+
+  /* ── REVEAL HINT ── */
+  .reveal-hint {
+    max-width: 480px; margin: 0 auto 0;
+    padding: 10px 20px;
+    background: rgba(96,165,250,0.08);
+    border: 1px solid rgba(96,165,250,0.2);
+    border-radius: var(--radius);
+    font-size: 12px; color: #93c5fd; text-align: center;
+    margin-top: 14px;
+  }
+
+  /* ── STICKY CONTROLS ── */
+  .controls-wrap {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(10,14,26,0.94);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 16px;
+  }
+  .controls {
+    max-width: 900px; margin: 0 auto;
+    display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+  }
+  .ctrl-label {
+    font-size: 11px; color: var(--text3);
+    letter-spacing: .06em; text-transform: uppercase; white-space: nowrap;
+  }
+  .group-tabs { display: flex; gap: 4px; flex-wrap: wrap; flex: 1; }
+  .gtab {
+    padding: 5px 11px;
+    border: 1px solid var(--border2); border-radius: var(--radius-sm);
+    background: transparent; color: var(--text2);
+    font-size: 12px; font-weight: 500; cursor: pointer;
+    transition: all .15s; font-family: inherit;
+  }
+  .gtab:hover { background: var(--bg3); color: var(--text); }
+  .gtab.active { background: var(--gold); color: #0a0e1a; border-color: var(--gold); font-weight: 700; }
+  .search-box {
+    padding: 6px 12px;
+    border: 1px solid var(--border2); border-radius: var(--radius-sm);
+    background: var(--bg2); color: var(--text);
+    font-size: 13px; font-family: inherit; outline: none; width: 150px;
+    transition: border-color .15s;
+  }
+  .search-box:focus { border-color: var(--gold); }
+  .search-box::placeholder { color: var(--text3); }
+
+  /* ── STATS ── */
+  .stats-bar {
+    max-width: 900px; margin: 0 auto;
+    padding: 10px 16px 0;
+    display: flex; gap: 6px; flex-wrap: wrap;
+  }
+  .sc {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 5px 10px;
+    font-size: 12px; color: var(--text2);
+  }
+  .sc b { color: var(--text); font-weight: 600; }
+
+  /* ── LEGEND ── */
+  .legend {
+    max-width: 900px; margin: 0 auto;
+    padding: 8px 16px;
+    display: flex; gap: 12px; flex-wrap: wrap;
+    font-size: 11px; color: var(--text3); align-items: center;
+  }
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+  .ld { width: 10px; height: 3px; border-radius: 2px; }
+
+  /* ── MAIN ── */
+  .main { max-width: 900px; margin: 0 auto; padding: 12px 16px 48px; }
+
+  /* ── ROUND HEADER ── */
+  .round-header {
+    display: flex; align-items: center; gap: 12px;
+    margin: 22px 0 8px;
+  }
+  .round-header:first-child { margin-top: 6px; }
+  .round-line { flex: 1; height: 1px; background: var(--border); }
+  .round-label {
+    font-size: 11px; font-weight: 600;
+    letter-spacing: .1em; text-transform: uppercase;
+    color: var(--text3); white-space: nowrap;
+  }
+
+  /* ── DAY ── */
+  .day-label {
+    font-size: 12px; color: var(--text3);
+    margin: 12px 0 5px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .day-label::after { content:''; flex:1; height:1px; background:var(--border); }
+
+  /* ── MATCH CARD ── */
+  .match-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 14px; margin-bottom: 5px;
+    display: grid;
+    grid-template-columns: 52px 1fr 108px 1fr 136px;
+    align-items: center; gap: 10px;
+    position: relative; overflow: hidden;
+    transition: border-color .15s, background .15s, transform .1s;
+  }
+  .match-card::before {
+    content:''; position:absolute; left:0; top:0; bottom:0;
+    width:3px; border-radius:3px 0 0 3px;
+  }
+  .match-card.played::before  { background: var(--green); }
+  .match-card.upcoming::before { background: var(--border2); }
+  .match-card.upcoming { cursor: default; }
+
+  /* ── META COL ── */
+  .meta-col { text-align: center; }
+  .grp-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: rgba(240,180,41,0.15);
+    border: 1px solid rgba(240,180,41,0.3);
+    font-size: 12px; font-weight: 700; color: var(--gold);
+    margin-bottom: 3px;
+  }
+  .venue-tag { font-size: 10px; color: var(--text3); line-height: 1.3; }
+
+  /* ── TEAMS ── */
+  .team-home { display: flex; align-items: center; gap: 7px; }
+  .team-away { display: flex; align-items: center; gap: 7px; flex-direction: row-reverse; text-align: right; }
+  .flag { font-size: 21px; line-height: 1; flex-shrink: 0; }
+  .tname { font-size: 14px; font-weight: 600; color: var(--text); }
+  .tname.sm { font-size: 12px; }
+
+  /* ── SCORE COL ── */
+  .score-col { text-align: center; }
+  .score-final { font-size: 22px; font-weight: 700; color: var(--text); letter-spacing: .04em; }
+  .score-final-label { font-size: 10px; color: var(--green); margin-top: 1px; }
+
+  /* ── HIDDEN STATE ── */
+  .pred-hidden {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+  }
+  .reveal-btn {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 7px 14px;
+    background: rgba(240,180,41,0.1);
+    border: 1px solid rgba(240,180,41,0.35);
+    border-radius: var(--radius-sm);
+    font-size: 12px; font-weight: 600; color: var(--gold);
+    cursor: pointer; font-family: inherit;
+    transition: background .15s, transform .1s;
+    white-space: nowrap;
+  }
+  .reveal-btn:hover { background: rgba(240,180,41,0.2); transform: scale(1.03); }
+  .reveal-btn:active { transform: scale(0.97); }
+  .vs-text { font-size: 14px; font-weight: 600; color: var(--text3); }
+
+  /* ── REVEALED STATE ── */
+  .pred-revealed { display: none; flex-direction: column; align-items: center; gap: 3px; }
+  .pred-revealed.show { display: flex; }
+  .pred-score { font-size: 20px; font-weight: 700; color: var(--text); letter-spacing: .04em; }
+  .tip-badge {
+    display: inline-block; padding: 2px 8px;
+    border-radius: 4px; font-size: 10px; font-weight: 600;
+  }
+  .tip-H { background: var(--green-bg); color: var(--green); border: 1px solid rgba(34,197,94,0.25); }
+  .tip-D { background: var(--yellow-bg); color: var(--yellow); border: 1px solid rgba(251,191,36,0.25); }
+  .tip-A { background: var(--red-bg); color: var(--red); border: 1px solid rgba(248,113,113,0.25); }
+  .conf-wrap { display: flex; align-items: center; gap: 5px; margin-top: 1px; }
+  .conf-bar-bg { width: 52px; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .conf-bar-fill { height: 100%; border-radius: 2px; transition: width .6s ease; }
+  .conf-txt { font-size: 10px; color: var(--text3); }
+
+  /* ── ANALYSIS COL ── */
+  .analysis-col {
+    font-size: 11px; color: var(--text3); line-height: 1.5;
+    border-left: 1px solid var(--border); padding-left: 10px;
+  }
+  .analysis-col .analyst {
+    font-size: 10px; color: var(--text3); margin-bottom: 2px;
+    text-transform: uppercase; letter-spacing: .06em;
+  }
+  .analysis-col .note-hidden { color: var(--text3); font-style: italic; }
+  .analysis-col .note-shown  { color: var(--text2); display: none; }
+  .analysis-col.revealed .note-hidden { display: none; }
+  .analysis-col.revealed .note-shown  { display: block; }
+
+  /* ── EMPTY ── */
+  .no-results { text-align: center; padding: 48px 20px; color: var(--text3); font-size: 14px; }
+
+  /* ── FOOTER ── */
+  .footer {
+    text-align: center; padding: 24px 16px 32px;
+    color: var(--text3); font-size: 12px;
+    border-top: 1px solid var(--border); margin-top: 16px;
+  }
+  .footer span { color: var(--gold); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    .match-card { grid-template-columns: 38px 1fr 100px 1fr; gap: 6px; }
+    .analysis-col { display: none; }
+    .tname { font-size: 12px; }
+    .tname.sm { font-size: 11px; }
+    .flag { font-size: 17px; }
+    .grp-badge { width: 24px; height: 24px; font-size: 11px; }
+    .pred-score { font-size: 17px; }
+    .score-final { font-size: 18px; }
+    .reveal-btn { font-size: 11px; padding: 6px 10px; }
+  }
+  @media (max-width: 380px) {
+    .venue-tag { display: none; }
+    .hero h1 { font-size: 28px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .live-dot { animation: none; }
+    .reveal-btn, .match-card { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-eyebrow">USA · CANADA · MEXICO</div>
+  <h1>
+    <span class="tom">TOM</span><br>
+    <span class="wc">2026 FIFA 世界盃預測</span>
+  </h1>
+  <p class="hero-sub">小組賽賽程 &amp; 比賽預測 ✦ A–L 共 12 組 ✦ 72 場比賽</p>
+  <div class="hero-pills">
+    <div class="pill">📅 <b>6/11</b> – <b>6/27</b></div>
+    <div class="pill">🏟 <b>16</b> 座場館</div>
+    <div class="pill">🌍 <b>48</b> 支參賽隊</div>
+    <div class="pill">⚽ <b>72</b> 場小組賽</div>
+  </div>
+  <div class="live-badge">
+    <div class="live-dot"></div>
+    賽事進行中 ✦ 首戰：墨西哥 2–0 南非
+  </div>
+  <div class="reveal-hint">
+    💡 未開打的比賽預測已隱藏 — 按「揭曉預測」自己決定何時看答案
+  </div>
+</header>
+
+<!-- CONTROLS -->
+<div class="controls-wrap">
+  <div class="controls">
+    <span class="ctrl-label">篩選</span>
+    <div class="group-tabs" id="group-tabs">
+      <button class="gtab active" data-g="all">全部</button>
+      <button class="gtab" data-g="A">A</button>
+      <button class="gtab" data-g="B">B</button>
+      <button class="gtab" data-g="C">C</button>
+      <button class="gtab" data-g="D">D</button>
+      <button class="gtab" data-g="E">E</button>
+      <button class="gtab" data-g="F">F</button>
+      <button class="gtab" data-g="G">G</button>
+      <button class="gtab" data-g="H">H</button>
+      <button class="gtab" data-g="I">I</button>
+      <button class="gtab" data-g="J">J</button>
+      <button class="gtab" data-g="K">K</button>
+      <button class="gtab" data-g="L">L</button>
+    </div>
+    <input class="search-box" id="search" type="text" placeholder="🔍 搜尋隊名…">
+  </div>
+</div>
+
+<!-- LEGEND -->
+<div class="legend">
+  <div class="legend-item"><div class="ld" style="background:var(--green)"></div>已結束</div>
+  <div class="legend-item"><div class="ld" style="background:#334155"></div>未開打</div>
+  <div class="legend-item"><span class="tip-badge tip-H">主勝</span></div>
+  <div class="legend-item"><span class="tip-badge tip-D">平局</span></div>
+  <div class="legend-item"><span class="tip-badge tip-A">客勝</span></div>
+</div>
+
+<!-- STATS -->
+<div class="stats-bar" id="stats-bar"></div>
+
+<!-- MAIN -->
+<main class="main" id="main"></main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p><span>TOM</span> 2026 FIFA 世界盃預測 ✦ 淘汰賽對陣將依小組賽實際結果更新</p>
+  <p style="margin-top:5px;opacity:.45">預測基於 FIFA 排名 × 近期表現 × 陣容深度分析</p>
+</footer>
+
+<script>
+// ── 已揭曉的比賽 (key = matchId) 存入 localStorage ──
+const REVEALED_KEY = 'wc2026_revealed';
+function getRevealed() {
+  try { return JSON.parse(localStorage.getItem(REVEALED_KEY) || '{}'); } catch(e) { return {}; }
+}
+function setRevealed(id) {
+  const r = getRevealed(); r[id] = true;
+  try { localStorage.setItem(REVEALED_KEY, JSON.stringify(r)); } catch(e) {}
+}
+
+const MATCHES = [
+  // ── 第一輪 ──
+  {r:1,d:'06/11',day:'週四',g:'A',hf:'🇲🇽',hn:'墨西哥',  af:'🇿🇦',an:'南非',      played:true, score:'2–0',pred:'2–0',tip:'H',conf:90,note:'Quiñones+Jiménez建功，地主氣勢如虹',venue:'墨西哥市'},
+  {r:1,d:'06/11',day:'週四',g:'A',hf:'🇰🇷',hn:'南韓',    af:'🇨🇿',an:'捷克',      played:false,score:null,pred:'1–1',tip:'D',conf:45,note:'孫興慜能否突破捷克防線是全場焦點',venue:'瓜達拉哈拉'},
+  {r:1,d:'06/12',day:'週五',g:'B',hf:'🇨🇦',hn:'加拿大',  af:'🇧🇦',an:'波赫',      played:false,score:null,pred:'2–0',tip:'H',conf:65,note:'Davies領銜地主出戰，波赫體能消耗大',venue:'多倫多'},
+  {r:1,d:'06/13',day:'週六',g:'B',hf:'🇶🇦',hn:'卡達',    af:'🇨🇭',an:'瑞士',      played:false,score:null,pred:'0–2',tip:'A',conf:72,note:'瑞士老練穩健，卡達主場神話已成過去',venue:'聖克拉拉'},
+  {r:1,d:'06/13',day:'週六',g:'C',hf:'🇧🇷',hn:'巴西',    af:'🇲🇦',an:'摩洛哥',    played:false,score:null,pred:'2–1',tip:'H',conf:58,note:'本輪最精彩對決，摩洛哥防守如銅牆鐵壁',venue:'紐約/NJ'},
+  {r:1,d:'06/13',day:'週六',g:'C',hf:'🇭🇹',hn:'海地',    af:'🏴󠁧󠁢󠁳󠁣󠁴󠁿',an:'蘇格蘭',  played:false,score:null,pred:'0–2',tip:'A',conf:75,note:'蘇格蘭時隔28年重返，海地首次世界盃',venue:'波士頓'},
+  {r:1,d:'06/12',day:'週五',g:'D',hf:'🇺🇸',hn:'美國',    af:'🇵🇾',an:'巴拉圭',    played:false,score:null,pred:'2–1',tip:'H',conf:62,note:'Pulisic地主開門紅，巴拉圭防守反擊',venue:'洛杉磯'},
+  {r:1,d:'06/13',day:'週六',g:'D',hf:'🇦🇺',hn:'澳洲',    af:'🇹🇷',an:'土耳其',    played:false,score:null,pred:'1–1',tip:'D',conf:48,note:'2022八強班底對決土耳其強悍中場，難分高下',venue:'溫哥華'},
+  {r:1,d:'06/14',day:'週日',g:'E',hf:'🇩🇪',hn:'德國',    af:'🇨🇼',an:'庫拉索',    played:false,score:null,pred:'5–0',tip:'H',conf:96,note:'首次出線的庫拉索迎戰四屆冠軍，教學賽',venue:'休士頓'},
+  {r:1,d:'06/14',day:'週日',g:'E',hf:'🇨🇮',hn:'象牙海岸',af:'🇪🇨',an:'厄瓜多',    played:false,score:null,pred:'1–1',tip:'D',conf:48,note:'非洲勁旅對南美黑馬，兩隊實力相當',venue:'堪薩斯城'},
+  {r:1,d:'06/14',day:'週日',g:'F',hf:'🇳🇱',hn:'荷蘭',    af:'🇯🇵',an:'日本',      played:false,score:null,pred:'2–1',tip:'H',conf:56,note:'超高關注！日本曾殺敗德西，荷蘭嚴陣以待',venue:'西雅圖'},
+  {r:1,d:'06/15',day:'週一',g:'F',hf:'🇸🇪',hn:'瑞典',    af:'🇹🇳',an:'突尼西亞',  played:false,score:null,pred:'2–0',tip:'H',conf:68,note:'瑞典積極重建，突尼西亞以守見長',venue:'洛杉磯'},
+  {r:1,d:'06/15',day:'週一',g:'G',hf:'🇧🇪',hn:'比利時',  af:'🇪🇬',an:'埃及',      played:false,score:null,pred:'2–1',tip:'H',conf:65,note:'De Bruyne vs Salah 世界頂尖巨星對決',venue:'西雅圖'},
+  {r:1,d:'06/15',day:'週一',g:'G',hf:'🇮🇷',hn:'伊朗',    af:'🇳🇿',an:'紐西蘭',    played:false,score:null,pred:'2–0',tip:'H',conf:82,note:'亞洲最穩防守，紐西蘭難以破門',venue:'洛杉磯'},
+  {r:1,d:'06/15',day:'週一',g:'H',hf:'🇪🇸',hn:'西班牙',  af:'🇨🇻',an:'維德角',    played:false,score:null,pred:'4–0',tip:'H',conf:95,note:'FIFA第一出戰首次出線新兵，Yamal精彩可期',venue:'亞特蘭大'},
+  {r:1,d:'06/15',day:'週一',g:'H',hf:'🇸🇦',hn:'沙烏地',  af:'🇺🇾',an:'烏拉圭',    played:false,score:null,pred:'1–2',tip:'A',conf:65,note:'Darwin Núñez爆發，沙烏地難複製2022奇蹟',venue:'邁阿密'},
+  {r:1,d:'06/16',day:'週二',g:'I',hf:'🇫🇷',hn:'法國',    af:'🇸🇳',an:'塞內加爾',  played:false,score:null,pred:'2–0',tip:'H',conf:72,note:'Mbappé對決舊日隊友，法國陣容全面',venue:'紐約/NJ'},
+  {r:1,d:'06/16',day:'週二',g:'I',hf:'🇮🇶',hn:'伊拉克',  af:'🇳🇴',an:'挪威',      played:false,score:null,pred:'0–3',tip:'A',conf:90,note:'Haaland首屆世界盃登場，黑馬挪威大爆發',venue:'波士頓'},
+  {r:1,d:'06/16',day:'週二',g:'J',hf:'🇦🇷',hn:'阿根廷',  af:'🇩🇿',an:'阿爾及利亞',played:false,score:null,pred:'3–0',tip:'H',conf:88,note:'衛冕冠軍首戰，梅西謝幕大賽登場',venue:'堪薩斯城'},
+  {r:1,d:'06/16',day:'週二',g:'J',hf:'🇦🇹',hn:'奧地利',  af:'🇯🇴',an:'約旦',      played:false,score:null,pred:'3–0',tip:'H',conf:85,note:'奧地利整體均衡，約旦首次出線面臨嚴峻考驗',venue:'聖克拉拉'},
+  {r:1,d:'06/17',day:'週三',g:'K',hf:'🇵🇹',hn:'葡萄牙',  af:'🇨🇩',an:'剛果',      played:false,score:null,pred:'3–0',tip:'H',conf:88,note:'C羅謝幕之旅首戰，葡萄牙陣容豪華壓制',venue:'休士頓'},
+  {r:1,d:'06/17',day:'週三',g:'K',hf:'🇺🇿',hn:'烏茲別克',af:'🇨🇴',an:'哥倫比亞',  played:false,score:null,pred:'0–2',tip:'A',conf:80,note:'James Rodríguez領軍，哥倫比亞資格賽南美第一',venue:'墨西哥市'},
+  {r:1,d:'06/17',day:'週三',g:'L',hf:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',hn:'英格蘭',  af:'🇭🇷',an:'克羅埃西亞',played:false,score:null,pred:'2–0',tip:'H',conf:70,note:'2018準決賽復仇！Bellingham主宰全場',venue:'達拉斯'},
+  {r:1,d:'06/17',day:'週三',g:'L',hf:'🇬🇭',hn:'迦納',    af:'🇵🇦',an:'巴拿馬',    played:false,score:null,pred:'2–0',tip:'H',conf:72,note:'迦納旅歐球員豐富，巴拿馬防守型打法',venue:'多倫多'},
+  // ── 第二輪 ──
+  {r:2,d:'06/18',day:'週四',g:'A',hf:'🇨🇿',hn:'捷克',    af:'🇿🇦',an:'南非',      played:false,score:null,pred:'2–0',tip:'H',conf:70,note:'捷克需搶分，南非首輪已負形勢嚴峻',venue:'亞特蘭大'},
+  {r:2,d:'06/18',day:'週四',g:'A',hf:'🇲🇽',hn:'墨西哥',  af:'🇰🇷',an:'南韓',      played:false,score:null,pred:'1–2',tip:'A',conf:52,note:'孫興慜對決墨西哥，南韓陣容更均衡',venue:'瓜達拉哈拉'},
+  {r:2,d:'06/18',day:'週四',g:'B',hf:'🇨🇭',hn:'瑞士',    af:'🇧🇦',an:'波赫',      played:false,score:null,pred:'2–1',tip:'H',conf:65,note:'瑞士穩定老練，波赫高強度消耗體能',venue:'洛杉磯'},
+  {r:2,d:'06/18',day:'週四',g:'B',hf:'🇨🇦',hn:'加拿大',  af:'🇶🇦',an:'卡達',      played:false,score:null,pred:'3–0',tip:'H',conf:80,note:'加拿大主場大勝，卡達無主場加持',venue:'溫哥華'},
+  {r:2,d:'06/19',day:'週五',g:'C',hf:'🏴󠁧󠁢󠁳󠁣󠁴󠁿',hn:'蘇格蘭', af:'🇲🇦',an:'摩洛哥',    played:false,score:null,pred:'0–2',tip:'A',conf:68,note:'摩洛哥防守如銅牆，蘇格蘭出線形勢艱難',venue:'波士頓'},
+  {r:2,d:'06/19',day:'週五',g:'C',hf:'🇧🇷',hn:'巴西',    af:'🇭🇹',an:'海地',      played:false,score:null,pred:'5–0',tip:'H',conf:95,note:'實力懸殊，巴西搶攻淨勝球',venue:'費城'},
+  {r:2,d:'06/19',day:'週五',g:'D',hf:'🇺🇸',hn:'美國',    af:'🇦🇺',an:'澳洲',      played:false,score:null,pred:'2–0',tip:'H',conf:65,note:'主場西雅圖球迷爆棚，澳洲需全力應對',venue:'西雅圖'},
+  {r:2,d:'06/19',day:'週五',g:'D',hf:'🇹🇷',hn:'土耳其',  af:'🇵🇾',an:'巴拉圭',    played:false,score:null,pred:'2–1',tip:'H',conf:58,note:'土耳其中場實力突出，巴拉圭放手一搏',venue:'聖克拉拉'},
+  {r:2,d:'06/20',day:'週六',g:'E',hf:'🇩🇪',hn:'德國',    af:'🇨🇮',an:'象牙海岸',  played:false,score:null,pred:'3–0',tip:'H',conf:78,note:'Musiala+Wirtz雙星閃耀，德國全面壓制',venue:'多倫多'},
+  {r:2,d:'06/20',day:'週六',g:'E',hf:'🇪🇨',hn:'厄瓜多',  af:'🇨🇼',an:'庫拉索',    played:false,score:null,pred:'3–1',tip:'H',conf:82,note:'厄瓜多搶分，庫拉索體驗世界級舞台',venue:'堪薩斯城'},
+  {r:2,d:'06/20',day:'週六',g:'F',hf:'🇳🇱',hn:'荷蘭',    af:'🇸🇪',an:'瑞典',      played:false,score:null,pred:'3–1',tip:'H',conf:75,note:'荷蘭Gakpo+Simons搭檔摧毀瑞典防線',venue:'休士頓'},
+  {r:2,d:'06/20',day:'週六',g:'F',hf:'🇹🇳',hn:'突尼西亞',af:'🇯🇵',an:'日本',      played:false,score:null,pred:'0–2',tip:'A',conf:70,note:'日本技術足球克制突尼西亞，三笘薰邊路突破',venue:'蒙特雷'},
+  {r:2,d:'06/21',day:'週日',g:'G',hf:'🇧🇪',hn:'比利時',  af:'🇮🇷',an:'伊朗',      played:false,score:null,pred:'2–0',tip:'H',conf:70,note:'比利時中前場碾壓，伊朗以守為主',venue:'洛杉磯'},
+  {r:2,d:'06/21',day:'週日',g:'G',hf:'🇳🇿',hn:'紐西蘭',  af:'🇪🇬',an:'埃及',      played:false,score:null,pred:'0–2',tip:'A',conf:72,note:'Salah狀態火熱，紐西蘭難以抵擋',venue:'溫哥華'},
+  {r:2,d:'06/21',day:'週日',g:'H',hf:'🇪🇸',hn:'西班牙',  af:'🇸🇦',an:'沙烏地',    played:false,score:null,pred:'3–0',tip:'H',conf:88,note:'西班牙流暢傳控完美克制沙烏地',venue:'亞特蘭大'},
+  {r:2,d:'06/21',day:'週日',g:'H',hf:'🇺🇾',hn:'烏拉圭',  af:'🇨🇻',an:'維德角',    played:false,score:null,pred:'3–0',tip:'H',conf:88,note:'烏拉圭穩健收分，維德角首屆寶貴經驗',venue:'邁阿密'},
+  {r:2,d:'06/22',day:'週一',g:'I',hf:'🇫🇷',hn:'法國',    af:'🇮🇶',an:'伊拉克',    played:false,score:null,pred:'4–0',tip:'H',conf:96,note:'法國對決首次出線弱旅，大勝搶攻積分',venue:'費城'},
+  {r:2,d:'06/22',day:'週一',g:'I',hf:'🇳🇴',hn:'挪威',    af:'🇸🇳',an:'塞內加爾',  played:false,score:null,pred:'2–1',tip:'H',conf:62,note:'Haaland持續發光，塞內加爾防守反擊',venue:'紐約/NJ'},
+  {r:2,d:'06/22',day:'週一',g:'J',hf:'🇦🇷',hn:'阿根廷',  af:'🇦🇹',an:'奧地利',    played:false,score:null,pred:'2–0',tip:'H',conf:78,note:'梅西+De Paul中場統治，奧地利具競爭力',venue:'達拉斯'},
+  {r:2,d:'06/22',day:'週一',g:'J',hf:'🇯🇴',hn:'約旦',    af:'🇩🇿',an:'阿爾及利亞',played:false,score:null,pred:'1–1',tip:'D',conf:48,note:'兩隊積極求勝，阿爾及利亞旅歐球員更多',venue:'聖克拉拉'},
+  {r:2,d:'06/23',day:'週二',g:'K',hf:'🇵🇹',hn:'葡萄牙',  af:'🇺🇿',an:'烏茲別克',  played:false,score:null,pred:'4–0',tip:'H',conf:92,note:'葡萄牙大勝首次出線黑馬，C羅可能破門',venue:'休士頓'},
+  {r:2,d:'06/23',day:'週二',g:'K',hf:'🇨🇴',hn:'哥倫比亞',af:'🇨🇩',an:'剛果',      played:false,score:null,pred:'2–0',tip:'H',conf:72,note:'哥倫比亞穩健收分，James持續製造機會',venue:'瓜達拉哈拉'},
+  {r:2,d:'06/23',day:'週二',g:'L',hf:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',hn:'英格蘭',  af:'🇬🇭',an:'迦納',      played:false,score:null,pred:'3–0',tip:'H',conf:82,note:'英格蘭大勝鎖定出線，Saka+Foden輪番轟炸',venue:'波士頓'},
+  {r:2,d:'06/23',day:'週二',g:'L',hf:'🇵🇦',hn:'巴拿馬',  af:'🇭🇷',an:'克羅埃西亞',played:false,score:null,pred:'0–2',tip:'A',conf:78,note:'Modric謝幕之旅展大師風範，巴拿馬難擋',venue:'多倫多'},
+  // ── 第三輪 ──
+  {r:3,d:'06/24',day:'週三',g:'A',hf:'🇨🇿',hn:'捷克',    af:'🇲🇽',an:'墨西哥',    played:false,score:null,pred:'1–2',tip:'A',conf:60,note:'墨西哥頭名出線，捷克爭三名生機',venue:'墨西哥市'},
+  {r:3,d:'06/24',day:'週三',g:'A',hf:'🇿🇦',hn:'南非',    af:'🇰🇷',an:'南韓',      played:false,score:null,pred:'0–2',tip:'A',conf:68,note:'南韓搶攻確保晉級，南非幾無懸念出局',venue:'蒙特雷'},
+  {r:3,d:'06/24',day:'週三',g:'B',hf:'🇨🇭',hn:'瑞士',    af:'🇨🇦',an:'加拿大',    played:false,score:null,pred:'1–2',tip:'A',conf:55,note:'頭名之爭！加拿大主場優勢 vs 瑞士老練',venue:'溫哥華'},
+  {r:3,d:'06/24',day:'週三',g:'B',hf:'🇧🇦',hn:'波赫',    af:'🇶🇦',an:'卡達',      played:false,score:null,pred:'2–1',tip:'H',conf:60,note:'波赫需積分，卡達小組出局幾成定局',venue:'西雅圖'},
+  {r:3,d:'06/24',day:'週三',g:'C',hf:'🏴󠁧󠁢󠁳󠁣󠁴󠁿',hn:'蘇格蘭', af:'🇧🇷',an:'巴西',      played:false,score:null,pred:'0–3',tip:'A',conf:85,note:'巴西頭名出線，蘇格蘭提前出局',venue:'邁阿密'},
+  {r:3,d:'06/24',day:'週三',g:'C',hf:'🇲🇦',hn:'摩洛哥',  af:'🇭🇹',an:'海地',      played:false,score:null,pred:'3–0',tip:'H',conf:92,note:'摩洛哥穩拿第二，海地首屆世界盃告別',venue:'亞特蘭大'},
+  {r:3,d:'06/25',day:'週四',g:'D',hf:'🇹🇷',hn:'土耳其',  af:'🇺🇸',an:'美國',      played:false,score:null,pred:'1–2',tip:'A',conf:58,note:'美國主場完成小組賽，土耳其爭第三名',venue:'洛杉磯'},
+  {r:3,d:'06/25',day:'週四',g:'D',hf:'🇵🇾',hn:'巴拉圭',  af:'🇦🇺',an:'澳洲',      played:false,score:null,pred:'1–1',tip:'D',conf:50,note:'兩隊均需積分，預計纏鬥激烈',venue:'聖克拉拉'},
+  {r:3,d:'06/25',day:'週四',g:'E',hf:'🇩🇪',hn:'德國',    af:'🇪🇨',an:'厄瓜多',    played:false,score:null,pred:'2–1',tip:'H',conf:68,note:'德國力求頭名，厄瓜多拼搶第二名',venue:'費城'},
+  {r:3,d:'06/25',day:'週四',g:'E',hf:'🇨🇮',hn:'象牙海岸',af:'🇨🇼',an:'庫拉索',    played:false,score:null,pred:'2–0',tip:'H',conf:80,note:'象牙海岸第二名收官，庫拉索完美落幕',venue:'達拉斯'},
+  {r:3,d:'06/25',day:'週四',g:'F',hf:'🇯🇵',hn:'日本',    af:'🇸🇪',an:'瑞典',      played:false,score:null,pred:'2–1',tip:'H',conf:58,note:'關鍵晉級對決！三笘薰邊路可能決定命運',venue:'達拉斯'},
+  {r:3,d:'06/25',day:'週四',g:'F',hf:'🇹🇳',hn:'突尼西亞',af:'🇳🇱',an:'荷蘭',      played:false,score:null,pred:'0–3',tip:'A',conf:85,note:'荷蘭全勝頭名，突尼西亞難有作為',venue:'達拉斯'},
+  {r:3,d:'06/26',day:'週五',g:'G',hf:'🇪🇬',hn:'埃及',    af:'🇮🇷',an:'伊朗',      played:false,score:null,pred:'1–1',tip:'D',conf:48,note:'⚡晉級生死戰！Salah vs Taremi 關鍵對決',venue:'達拉斯'},
+  {r:3,d:'06/26',day:'週五',g:'G',hf:'🇳🇿',hn:'紐西蘭',  af:'🇧🇪',an:'比利時',    played:false,score:null,pred:'0–3',tip:'A',conf:88,note:'比利時輕鬆頭名，黃金一代謝幕之旅',venue:'達拉斯'},
+  {r:3,d:'06/26',day:'週五',g:'H',hf:'🇨🇻',hn:'維德角',  af:'🇸🇦',an:'沙烏地',    played:false,score:null,pred:'1–1',tip:'D',conf:50,note:'兩隊爭奪成績較佳第三名的生機',venue:'達拉斯'},
+  {r:3,d:'06/26',day:'週五',g:'H',hf:'🇺🇾',hn:'烏拉圭',  af:'🇪🇸',an:'西班牙',    played:false,score:null,pred:'0–2',tip:'A',conf:78,note:'西班牙全勝頭名，烏拉圭亦穩定第二出線',venue:'邁阿密'},
+  {r:3,d:'06/26',day:'週五',g:'I',hf:'🇳🇴',hn:'挪威',    af:'🇫🇷',an:'法國',      played:false,score:null,pred:'1–2',tip:'A',conf:65,note:'🔥 本輪壓軸！Haaland vs Mbappé 世代對決',venue:'波士頓'},
+  {r:3,d:'06/26',day:'週五',g:'I',hf:'🇸🇳',hn:'塞內加爾',af:'🇮🇶',an:'伊拉克',    played:false,score:null,pred:'3–0',tip:'H',conf:88,note:'塞內加爾確保晉級，伊拉克圓夢旅程結束',venue:'波士頓'},
+  {r:3,d:'06/27',day:'週六',g:'J',hf:'🇦🇷',hn:'阿根廷',  af:'🇯🇴',an:'約旦',      played:false,score:null,pred:'4–0',tip:'H',conf:95,note:'梅西世界盃謝幕，阿根廷全勝頭名出線',venue:'達拉斯'},
+  {r:3,d:'06/27',day:'週六',g:'J',hf:'🇩🇿',hn:'阿爾及利亞',af:'🇦🇹',an:'奧地利',  played:false,score:null,pred:'1–2',tip:'A',conf:60,note:'奧地利搶下第二名，阿爾及利亞拼第三名機會',venue:'堪薩斯城'},
+  {r:3,d:'06/27',day:'週六',g:'K',hf:'🇨🇴',hn:'哥倫比亞',af:'🇵🇹',an:'葡萄牙',    played:false,score:null,pred:'1–2',tip:'A',conf:62,note:'頭名之爭！James vs Bruno Fernandes',venue:'邁阿密'},
+  {r:3,d:'06/27',day:'週六',g:'K',hf:'🇨🇩',hn:'剛果',    af:'🇺🇿',an:'烏茲別克',  played:false,score:null,pred:'2–1',tip:'H',conf:58,note:'第三名生機之戰，剛果旅歐星援較豐',venue:'亞特蘭大'},
+  {r:3,d:'06/27',day:'週六',g:'L',hf:'🇵🇦',hn:'巴拿馬',  af:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',an:'英格蘭',    played:false,score:null,pred:'0–3',tip:'A',conf:90,note:'英格蘭輕取（2018年6-1），全勝頭名出線',venue:'紐約/NJ'},
+  {r:3,d:'06/27',day:'週六',g:'L',hf:'🇭🇷',hn:'克羅埃西亞',af:'🇬🇭',an:'迦納',    played:false,score:null,pred:'2–0',tip:'H',conf:72,note:'Modric最後世界盃第二名收官，迦納出局',venue:'費城'},
+];
+
+const ROUND_LABELS = {1:'第一輪（首戰）',2:'第二輪',3:'第三輪（決定性）'};
+const TIP_LABEL = {H:'主勝',D:'平局',A:'客勝'};
+const TIP_CLS   = {H:'tip-H',D:'tip-D',A:'tip-A'};
+const CONF_COLOR = c => c >= 80 ? '#22c55e' : c >= 60 ? '#fbbf24' : '#f87171';
+
+// unique id per match
+MATCHES.forEach((m,i) => m.id = i);
+
+let currentGroup = 'all';
+
+function matchId(m){ return 'wc_' + m.id; }
+
+function isRevealed(m){
+  return getRevealed()[matchId(m)] === true;
+}
+
+function reveal(id){
+  // id = numeric match index
+  const m = MATCHES[id];
+  setRevealed(matchId(m));
+
+  const card = document.querySelector(`.match-card[data-id="${id}"]`);
+  if(!card) return;
+
+  // show prediction
+  const hidden = card.querySelector('.pred-hidden');
+  const revealed = card.querySelector('.pred-revealed');
+  const ac = card.querySelector('.analysis-col');
+  if(hidden) hidden.style.display = 'none';
+  if(revealed){ revealed.style.display = 'flex'; revealed.classList.add('show'); }
+  if(ac) ac.classList.add('revealed');
+
+  // animate conf bar
+  const fill = card.querySelector('.conf-bar-fill');
+  if(fill){ setTimeout(()=>{ fill.style.width = m.conf + '%'; }, 50); }
+}
+
+function getFiltered(){
+  const sq = document.getElementById('search').value.toLowerCase().trim();
+  return MATCHES.filter(m => {
+    const gOk = currentGroup === 'all' || m.g === currentGroup;
+    const sOk = !sq || m.hn.toLowerCase().includes(sq) || m.an.toLowerCase().includes(sq);
+    return gOk && sOk;
+  });
+}
+
+function updateStats(data){
+  const played   = data.filter(m=>m.played).length;
+  const upcoming = data.length - played;
+  const rev      = data.filter(m=>!m.played && isRevealed(m)).length;
+  document.getElementById('stats-bar').innerHTML = `
+    <div class="sc">共 <b>${data.length}</b> 場</div>
+    <div class="sc">✅ 已結束 <b>${played}</b></div>
+    <div class="sc">⏳ 未開打 <b>${upcoming}</b></div>
+    <div class="sc">👁 已揭曉 <b>${rev}</b> / ${upcoming}</div>
+  `;
+}
+
+function buildScoreCol(m){
+  if(m.played){
+    return `<div class="score-final">${m.score}</div>
+            <div class="score-final-label">✓ 終場</div>`;
+  }
+  const rev = isRevealed(m);
+  const hiddenDisplay  = rev ? 'none'  : 'flex';
+  const revealedDisplay= rev ? 'flex'  : 'none';
+  const barW = rev ? m.conf : 0;
+  return `
+    <div class="pred-hidden" style="display:${hiddenDisplay}">
+      <div class="vs-text">vs</div>
+      <button class="reveal-btn" onclick="reveal(${m.id});event.stopPropagation()">
+        🔮 揭曉預測
+      </button>
+    </div>
+    <div class="pred-revealed${rev?' show':''}" style="display:${revealedDisplay}">
+      <div class="pred-score">${m.pred}</div>
+      <div class="pred-meta">
+        <span class="tip-badge ${TIP_CLS[m.tip]}">${TIP_LABEL[m.tip]}</span>
+        <div class="conf-wrap">
+          <div class="conf-bar-bg">
+            <div class="conf-bar-fill" style="width:${barW}%;background:${CONF_COLOR(m.conf)}"></div>
+          </div>
+          <span class="conf-txt">${m.conf}%</span>
+        </div>
+      </div>
+    </div>`;
+}
+
+function buildAnalysisCol(m){
+  if(m.played){
+    return `<div class="analysis-col revealed">
+              <div class="analyst">比賽結果</div>
+              <div class="note-shown">${m.note}</div>
+            </div>`;
+  }
+  const rev = isRevealed(m);
+  return `<div class="analysis-col${rev?' revealed':''}">
+            <div class="analyst">分析師預測</div>
+            <div class="note-hidden">按「揭曉預測」查看</div>
+            <div class="note-shown">${m.note}</div>
+          </div>`;
+}
+
+function render(){
+  const data = getFiltered();
+  updateStats(data);
+  const main = document.getElementById('main');
+
+  if(data.length === 0){
+    main.innerHTML = '<div class="no-results">找不到符合條件的比賽 🔍</div>';
+    return;
+  }
+
+  const byRound = {};
+  data.forEach(m => {
+    if(!byRound[m.r]) byRound[m.r] = [];
+    byRound[m.r].push(m);
+  });
+
+  let html = '';
+  Object.keys(byRound).sort((a,b)=>a-b).forEach(r => {
+    const ms = byRound[r];
+    html += `<div class="round-header">
+               <div class="round-line"></div>
+               <div class="round-label">⚽ ${ROUND_LABELS[r]} · ${ms.length} 場</div>
+               <div class="round-line"></div>
+             </div>`;
+
+    const byDate = {};
+    ms.forEach(m => {
+      const k = m.d + '|' + m.day;
+      if(!byDate[k]) byDate[k] = [];
+      byDate[k].push(m);
+    });
+
+    Object.entries(byDate).forEach(([dk, matches]) => {
+      const [date, day] = dk.split('|');
+      const grps = [...new Set(matches.map(m=>m.g))].join(' · ');
+      html += `<div class="day-label">${date} &nbsp;${day} &nbsp;·&nbsp; 第 ${grps} 組</div>`;
+
+      matches.forEach(m => {
+        const hn = m.hn.length > 4 ? `<span class="tname sm">${m.hn}</span>` : `<span class="tname">${m.hn}</span>`;
+        const an = m.an.length > 4 ? `<span class="tname sm">${m.an}</span>` : `<span class="tname">${m.an}</span>`;
+        html += `
+          <div class="match-card ${m.played?'played':'upcoming'}" data-id="${m.id}">
+            <div class="meta-col">
+              <div class="grp-badge">${m.g}</div>
+              <div class="venue-tag">${m.venue}</div>
+            </div>
+            <div class="team-home"><span class="flag">${m.hf}</span>${hn}</div>
+            <div class="score-col">${buildScoreCol(m)}</div>
+            <div class="team-away"><span class="flag">${m.af}</span>${an}</div>
+            ${buildAnalysisCol(m)}
+          </div>`;
+      });
+    });
+  });
+
+  main.innerHTML = html;
+
+  // restore conf bar widths for already-revealed matches
+  data.filter(m => !m.played && isRevealed(m)).forEach(m => {
+    const fill = document.querySelector(`.match-card[data-id="${m.id}"] .conf-bar-fill`);
+    if(fill) fill.style.width = m.conf + '%';
+  });
+}
+
+// ── Tab ──
+document.getElementById('group-tabs').addEventListener('click', e => {
+  const btn = e.target.closest('.gtab');
+  if(!btn) return;
+  document.querySelectorAll('.gtab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentGroup = btn.dataset.g;
+  render();
+});
+
+document.getElementById('search').addEventListener('input', render);
+
+render();
+</script>
+</body>
+</html>
