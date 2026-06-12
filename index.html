@@ -706,7 +706,9 @@ const TEAM_MAP = {
 
 async function fetchLiveScores() {
   try {
-    const res = await fetch('https://api.football-data.org/v4/competitions/WC/matches?status=FINISHED', {
+    const apiUrl = 'https://api.football-data.org/v4/competitions/WC/matches?status=FINISHED';
+    const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(apiUrl);
+    const res = await fetch(proxyUrl, {
       headers: { 'X-Auth-Token': API_TOKEN }
     });
     if (!res.ok) return;
