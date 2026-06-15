@@ -334,6 +334,77 @@
   }
   .footer span { color: var(--gold); }
 
+  /* ── MODAL ── */
+  .modal-backdrop {
+    display: none; position: fixed; inset: 0; z-index: 100;
+    background: rgba(0,0,0,0.65); backdrop-filter: blur(4px);
+    align-items: center; justify-content: center; padding: 16px;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal {
+    background: var(--bg2); border: 1px solid var(--border2);
+    border-radius: 16px; width: 100%; max-width: 480px;
+    max-height: 90vh; overflow-y: auto;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+    animation: modalIn .18s ease;
+  }
+  @keyframes modalIn { from { opacity:0; transform: scale(.95) translateY(8px); } to { opacity:1; transform: none; } }
+  .modal-header {
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;
+  }
+  .modal-teams { font-size: 16px; font-weight: 700; color: var(--text); line-height: 1.3; }
+  .modal-meta  { font-size: 11px; color: var(--text3); margin-top: 3px; }
+  .modal-close {
+    background: none; border: none; color: var(--text3); font-size: 20px;
+    cursor: pointer; padding: 0 2px; line-height: 1; flex-shrink: 0; margin-top: -2px;
+  }
+  .modal-close:hover { color: var(--text); }
+  .modal-body { padding: 16px 20px; display: flex; flex-direction: column; gap: 14px; }
+  .modal-section-label {
+    font-size: 10px; font-weight: 700; color: var(--text3);
+    letter-spacing: .1em; text-transform: uppercase; margin-bottom: 6px;
+  }
+  .modal-pred-row {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--bg3); border-radius: 10px; padding: 12px 14px;
+  }
+  .modal-pred-score { font-size: 28px; font-weight: 700; color: var(--text); letter-spacing: .05em; }
+  .modal-pred-info { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+  .modal-conf-bar-bg { width: 100%; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .modal-conf-bar-fill { height: 100%; border-radius: 3px; }
+  .modal-conf-txt { font-size: 11px; color: var(--text2); }
+  .modal-result-row {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--bg3); border-radius: 10px; padding: 12px 14px;
+  }
+  .modal-real-score { font-size: 26px; font-weight: 700; }
+  .modal-real-score.correct { color: #3b82f6; }
+  .modal-real-score.wrong   { color: var(--red); }
+  .modal-result-tag { font-size: 11px; color: var(--text2); }
+  .modal-note {
+    font-size: 13px; color: var(--text2); line-height: 1.65;
+    background: var(--bg3); border-radius: 10px; padding: 12px 14px;
+    border-left: 3px solid var(--gold);
+  }
+  .modal-factors { display: flex; flex-direction: column; gap: 6px; }
+  .modal-factor {
+    display: flex; align-items: flex-start; gap: 8px;
+    font-size: 12px; color: var(--text2); line-height: 1.5;
+  }
+  .modal-factor-icon { font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+  .modal-odds-bar { display: flex; height: 20px; border-radius: 6px; overflow: hidden; gap: 1px; margin-top: 6px; }
+  .modal-odds-seg { display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.9);
+    transition: width .5s; overflow: hidden; white-space: nowrap; }
+  .modal-odds-seg-h { background: rgba(34,197,94,0.6); }
+  .modal-odds-seg-d { background: rgba(251,191,36,0.5); }
+  .modal-odds-seg-a { background: rgba(248,113,113,0.55); }
+  .modal-odds-legend { display: flex; gap: 12px; margin-top: 6px; flex-wrap: wrap; }
+  .modal-odds-legend-item { font-size: 10px; color: var(--text3); }
+  .modal-odds-legend-item b { color: var(--text2); }
+
   /* ── RESPONSIVE ── */
   @media (max-width: 640px) {
     .match-card { grid-template-columns: 38px 1fr 100px 1fr; gap: 6px; }
@@ -420,6 +491,20 @@
 <main class="main" id="main"></main>
 
 <!-- FOOTER -->
+<!-- ── 預測分析 Modal ── -->
+<div class="modal-backdrop" id="modal-backdrop" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-teams" id="modal-teams"></div>
+        <div class="modal-meta" id="modal-meta"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
 <footer class="footer">
   <p><span>TOM</span> 2026 FIFA 世界盃預測 ✦ 淘汰賽對陣將依小組賽實際結果更新</p>
   <p style="margin-top:5px;opacity:.45">預測基於 FIFA 排名 × 近期表現 × 陣容深度分析</p>
@@ -672,7 +757,7 @@ function render(){
         const an = m.an.length > 4 ? `<span class="tname sm">${m.an}</span>` : `<span class="tname">${m.an}</span>`;
         const resultCls = m.played ? (isPredCorrect(m) ? ' correct' : ' wrong') : '';
         html += `
-          <div class="match-card ${m.played?'played':'upcoming'}${resultCls}" data-id="${m.id}">
+          <div class="match-card ${m.played?'played':'upcoming'}${resultCls}" data-id="${m.id}" onclick="openModal(${m.id})" style="cursor:pointer">
             <div class="meta-col">
               <div class="grp-badge">${m.g}</div>
               <div class="venue-tag">${m.venue}</div>
@@ -858,6 +943,115 @@ async function fetchLiveScores() {
     // 靜默失敗，不影響頁面顯示
   }
 }
+
+// ── Modal ──
+function openModal(id) {
+  const m = MATCHES[id];
+  const odds = ODDS_DATA[m.hn + '|' + m.an];
+
+  document.getElementById('modal-teams').innerHTML =
+    `${m.hf} ${m.hn} &nbsp;vs&nbsp; ${m.an} ${m.af}`;
+  document.getElementById('modal-meta').textContent =
+    `第 ${m.g} 組 · ${m.d} ${m.day} · ${m.venue}`;
+
+  let body = '';
+
+  // ── 結果（已結束）or 預測（未開打）──
+  if (m.played) {
+    const correct = isPredCorrect(m);
+    body += `<div>
+      <div class="modal-section-label">比賽結果 vs 預測</div>
+      <div class="modal-result-row">
+        <div class="modal-real-score ${correct?'correct':'wrong'}">${m.score}</div>
+        <div class="modal-result-tag">
+          <div>終場比分</div>
+          <div style="margin-top:4px;font-size:13px">${correct ? '✅ 預測命中！' : `❌ 落空（預測 ${m.pred}）`}</div>
+        </div>
+      </div>
+    </div>`;
+  } else {
+    body += `<div>
+      <div class="modal-section-label">TOM 預測</div>
+      <div class="modal-pred-row">
+        <div class="modal-pred-score">${m.pred}</div>
+        <div class="modal-pred-info">
+          <div style="display:flex;align-items:center;gap:6px">
+            <span class="tip-badge ${TIP_CLS[m.tip]}">${TIP_LABEL[m.tip]}</span>
+            <span style="font-size:11px;color:var(--text3)">信心值 ${m.conf}%</span>
+          </div>
+          <div class="modal-conf-bar-bg" style="margin-top:6px">
+            <div class="modal-conf-bar-fill" style="width:${m.conf}%;background:${CONF_COLOR(m.conf)}"></div>
+          </div>
+          <div class="modal-conf-txt" style="margin-top:3px">${
+            m.conf >= 85 ? '非常有把握' : m.conf >= 70 ? '相當有把握' : m.conf >= 55 ? '略有優勢' : '五五波'
+          }</div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // ── 核心分析 ──
+  body += `<div>
+    <div class="modal-section-label">核心分析</div>
+    <div class="modal-note">${m.note}</div>
+  </div>`;
+
+  // ── 關鍵因素 ──
+  const factors = [];
+  if (m.conf >= 85) factors.push(['🔥', '信心值極高，實力差距明顯，冷門機率低']);
+  else if (m.conf <= 50) factors.push(['⚖️', '勝負難料，任何結果皆有可能']);
+
+  if (m.r === 3) factors.push(['⚡', '小組賽最後一輪，出線壓力可能影響發揮']);
+  if (m.r === 1) factors.push(['🎯', '第一輪對戰，雙方均以保守起步為主']);
+
+  const roundRecord = { H:'主場', A:'客場', D:'平局' };
+  factors.push(['📊', `TOM 判斷${roundRecord[m.tip]}優勢，預測比分 ${m.pred}`]);
+
+  if (odds) {
+    const fav = odds.h > odds.d && odds.h > odds.a ? '主隊'
+              : odds.a > odds.d && odds.a > odds.h ? '客隊' : '平局';
+    const isWith = (m.tip === 'H' && fav === '主隊') || (m.tip === 'A' && fav === '客隊') || (m.tip === 'D' && fav === '平局');
+    factors.push(isWith
+      ? ['✅', `賭盤共識：${fav}較被看好，TOM 與主流判斷一致`]
+      : ['🔄', `賭盤偏向${fav}，TOM 選擇逆市預測，屬冒險押注`]);
+  }
+
+  body += `<div>
+    <div class="modal-section-label">關鍵因素</div>
+    <div class="modal-factors">${factors.map(([icon, txt]) =>
+      `<div class="modal-factor"><span class="modal-factor-icon">${icon}</span><span>${txt}</span></div>`
+    ).join('')}</div>
+  </div>`;
+
+  // ── 賭盤賠率 ──
+  if (odds) {
+    body += `<div>
+      <div class="modal-section-label">國際賭盤隱含機率（博彩公司均值）</div>
+      <div class="modal-odds-bar">
+        <div class="modal-odds-seg modal-odds-seg-h" style="width:${odds.h}%">${odds.h >= 18 ? odds.h+'%' : ''}</div>
+        <div class="modal-odds-seg modal-odds-seg-d" style="width:${odds.d}%">${odds.d >= 14 ? odds.d+'%' : ''}</div>
+        <div class="modal-odds-seg modal-odds-seg-a" style="width:${odds.a}%">${odds.a >= 18 ? odds.a+'%' : ''}</div>
+      </div>
+      <div class="modal-odds-legend">
+        <div class="modal-odds-legend-item">🟢 ${m.hn} 勝 <b>${odds.h}%</b></div>
+        <div class="modal-odds-legend-item">🟡 平局 <b>${odds.d}%</b></div>
+        <div class="modal-odds-legend-item">🔴 ${m.an} 勝 <b>${odds.a}%</b></div>
+      </div>
+    </div>`;
+  }
+
+  document.getElementById('modal-body').innerHTML = body;
+  document.getElementById('modal-backdrop').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(e) {
+  if (e && e.target !== document.getElementById('modal-backdrop')) return;
+  document.getElementById('modal-backdrop').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
 render();
 fetchLiveScores();
