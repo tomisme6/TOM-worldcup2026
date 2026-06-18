@@ -470,6 +470,119 @@
     .live-dot { animation: none; }
     .reveal-btn, .match-card { transition: none; }
   }
+
+  /* ── ACCURACY BANNER ── */
+  .acc-banner {
+    background: linear-gradient(90deg, rgba(240,180,41,0.06) 0%, rgba(59,130,246,0.06) 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 16px;
+    display: flex; align-items: center; justify-content: center;
+    gap: 0; flex-wrap: wrap;
+  }
+  .acc-item { display: flex; flex-direction: column; align-items: center; padding: 4px 20px; }
+  .acc-big {
+    font-size: 30px; font-weight: 800; color: var(--gold);
+    font-family: 'Bebas Neue', sans-serif; letter-spacing: .04em; line-height: 1;
+  }
+  .acc-big.blue { color: #60a5fa; }
+  .acc-big.green { color: var(--green); }
+  .acc-label { font-size: 10px; color: var(--text3); letter-spacing: .08em; text-transform: uppercase; margin-top: 3px; }
+  .acc-divider { width: 1px; height: 38px; background: var(--border2); flex-shrink: 0; }
+  .acc-progress-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 4px 20px; }
+  .acc-bar-bg { width: 140px; height: 7px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .acc-bar-fill { height: 100%; background: linear-gradient(90deg, var(--gold), #22c55e); border-radius: 4px; width: 0%; transition: width 1.2s cubic-bezier(.4,0,.2,1); }
+  .acc-pct { font-size: 18px; font-weight: 800; color: var(--text); font-family: 'Bebas Neue', sans-serif; }
+  @media (max-width: 520px) {
+    .acc-banner { gap: 4px; }
+    .acc-item { padding: 4px 12px; }
+    .acc-big { font-size: 24px; }
+    .acc-bar-bg { width: 100px; }
+  }
+
+  /* ── BOLD PICK BADGE ── */
+  .bold-pick-tag {
+    display: inline-flex; align-items: center; gap: 3px;
+    background: linear-gradient(90deg, rgba(239,68,68,0.18), rgba(240,180,41,0.18));
+    border: 1px solid rgba(240,180,41,0.45);
+    border-radius: 4px; padding: 1px 6px;
+    font-size: 9px; font-weight: 700; color: var(--gold);
+    letter-spacing: .05em; text-transform: uppercase;
+    animation: boldPulse 2.5s ease-in-out infinite;
+  }
+  @keyframes boldPulse {
+    0%,100% { box-shadow: 0 0 0 0 rgba(240,180,41,0); }
+    50%      { box-shadow: 0 0 6px 2px rgba(240,180,41,0.25); }
+  }
+
+  /* ── VOTE ROW ── */
+  .vote-row {
+    grid-column: 1 / -1;
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 0 2px; border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .vote-prompt { font-size: 11px; color: var(--text3); flex-shrink: 0; }
+  .vote-btns { display: flex; gap: 6px; flex: 1; }
+  .vote-btn {
+    display: flex; align-items: center; gap: 4px;
+    padding: 5px 12px; border-radius: 7px;
+    font-size: 11px; font-weight: 700; cursor: pointer;
+    border: 1px solid var(--border2); background: var(--bg3);
+    color: var(--text2); font-family: inherit;
+    transition: all .15s; white-space: nowrap;
+  }
+  .vote-btn:hover { transform: scale(1.06); }
+  .vote-btn:active { transform: scale(0.96); }
+  .vote-btn.agree.voted  { background: rgba(34,197,94,0.15); border-color: rgba(34,197,94,0.5); color: var(--green); }
+  .vote-btn.disagree.voted { background: rgba(248,113,113,0.13); border-color: rgba(248,113,113,0.4); color: var(--red); }
+  .vote-label { font-size: 10px; color: var(--text3); margin-left: auto; font-style: italic; }
+
+  /* ── SHARE BUTTON ── */
+  .share-match-btn {
+    display: inline-flex; align-items: center; gap: 3px;
+    padding: 3px 8px; border-radius: 5px;
+    font-size: 10px; font-weight: 600;
+    background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.25);
+    color: #60a5fa; cursor: pointer; font-family: inherit;
+    transition: all .15s; flex-shrink: 0;
+  }
+  .share-match-btn:hover { background: rgba(59,130,246,0.22); transform: scale(1.05); }
+
+  /* ── CONFETTI ── */
+  .confetti-container {
+    position: fixed; inset: 0; pointer-events: none; z-index: 999; overflow: hidden;
+  }
+  .cp {
+    position: absolute; width: 8px; height: 8px; top: -12px;
+    animation: cpFall linear forwards;
+    border-radius: 2px;
+  }
+  @keyframes cpFall {
+    0%   { transform: translateY(0) rotate(0deg) scaleX(1); opacity: 1; }
+    80%  { opacity: 1; }
+    100% { transform: translateY(105vh) rotate(900deg) scaleX(-1); opacity: 0; }
+  }
+
+  /* ── CARD HOVER GLOW ── */
+  .match-card.upcoming:hover {
+    border-color: rgba(240,180,41,0.3);
+    box-shadow: 0 2px 16px rgba(240,180,41,0.08);
+    transform: translateY(-1px);
+  }
+  .match-card.correct:hover { box-shadow: 0 2px 16px rgba(59,130,246,0.15); transform: translateY(-1px); }
+  .match-card.wrong:hover   { box-shadow: 0 2px 16px rgba(248,113,113,0.12); transform: translateY(-1px); }
+
+  /* ── HERO SHARE BTN ── */
+  .hero-share {
+    margin-top: 10px;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 20px; border-radius: 999px;
+    background: rgba(240,180,41,0.12); border: 1px solid rgba(240,180,41,0.35);
+    font-size: 12px; font-weight: 600; color: var(--gold);
+    cursor: pointer; font-family: inherit; transition: all .15s;
+    text-decoration: none;
+  }
+  .hero-share:hover { background: rgba(240,180,41,0.22); transform: scale(1.04); }
 </style>
 </head>
 <body>
@@ -503,7 +616,32 @@
   <div class="reveal-hint">
     💡 未開打的比賽預測已隱藏 — 按「揭曉預測」自己決定何時看答案
   </div>
+  <button class="hero-share" onclick="shareSite()">🔗 分享給朋友挑戰</button>
 </header>
+
+<!-- ACCURACY BANNER -->
+<div class="acc-banner" id="acc-banner">
+  <div class="acc-item">
+    <div class="acc-big green" id="acc-correct-num">–</div>
+    <div class="acc-label">場命中</div>
+  </div>
+  <div class="acc-divider"></div>
+  <div class="acc-item">
+    <div class="acc-big" id="acc-played-num">–</div>
+    <div class="acc-label">場已結束</div>
+  </div>
+  <div class="acc-divider"></div>
+  <div class="acc-progress-wrap">
+    <div class="acc-pct" id="acc-pct">–%</div>
+    <div class="acc-bar-bg"><div class="acc-bar-fill" id="acc-bar"></div></div>
+    <div class="acc-label">TOM 命中率</div>
+  </div>
+  <div class="acc-divider"></div>
+  <div class="acc-item">
+    <div class="acc-big blue" id="acc-bold-num">–</div>
+    <div class="acc-label">🔥 逆市精選</div>
+  </div>
+</div>
 
 <!-- CONTROLS -->
 <div class="controls-wrap">
@@ -572,6 +710,85 @@ function getRevealed() {
 function setRevealed(id) {
   const r = getRevealed(); r[id] = true;
   try { localStorage.setItem(REVEALED_KEY, JSON.stringify(r)); } catch(e) {}
+}
+
+// ── 投票 ──
+function getVote(id) {
+  try { return localStorage.getItem('wc2026_vote_' + id); } catch(e) { return null; }
+}
+function castVote(id, type) {
+  const cur = getVote(id);
+  try {
+    if (cur === type) localStorage.removeItem('wc2026_vote_' + id);
+    else localStorage.setItem('wc2026_vote_' + id, type);
+  } catch(e) {}
+  render();
+}
+
+// ── 逆市精選判斷 ──
+function isBoldPick(m) {
+  if (m.played) return false;
+  if (m.conf <= 55) return true;
+  const odds = ODDS_DATA[m.hn + '|' + m.an];
+  if (!odds) return false;
+  const oddsWinner = odds.h > odds.d && odds.h > odds.a ? 'H'
+                   : odds.a > odds.d && odds.a > odds.h ? 'A' : 'D';
+  return m.tip !== oddsWinner;
+}
+
+// ── 命中率更新 ──
+function updateAccuracy() {
+  const played = MATCHES.filter(m => m.played);
+  const correct = played.filter(m => isPredCorrect(m));
+  const bold = MATCHES.filter(m => !m.played && isBoldPick(m));
+  const pct = played.length ? Math.round(correct.length / played.length * 100) : 0;
+
+  const setEl = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+  setEl('acc-correct-num', correct.length);
+  setEl('acc-played-num', played.length);
+  setEl('acc-pct', played.length ? pct + '%' : '–');
+  setEl('acc-bold-num', bold.length);
+  const bar = document.getElementById('acc-bar');
+  if (bar) setTimeout(() => { bar.style.width = pct + '%'; }, 100);
+}
+
+// ── Confetti ──
+function triggerConfetti() {
+  const container = document.createElement('div');
+  container.className = 'confetti-container';
+  document.body.appendChild(container);
+  const colors = ['#f0b429','#22c55e','#3b82f6','#f87171','#a78bfa','#34d399'];
+  for (let i = 0; i < 80; i++) {
+    const p = document.createElement('div');
+    p.className = 'cp';
+    p.style.cssText = `
+      left:${Math.random()*100}%;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      width:${6+Math.random()*6}px;height:${6+Math.random()*10}px;
+      border-radius:${Math.random()>0.5?'50%':'2px'};
+      animation-duration:${1.5+Math.random()*2}s;
+      animation-delay:${Math.random()*0.8}s;
+    `;
+    container.appendChild(p);
+  }
+  setTimeout(() => container.remove(), 4000);
+}
+
+// ── 分享 ──
+function shareSite() {
+  const data = { title: 'TOM 2026 FIFA 世界盃預測', text: '冷門下重注，海邊住別墅 🏠⚽', url: location.href };
+  if (navigator.share) navigator.share(data).catch(() => {});
+  else {
+    navigator.clipboard?.writeText(location.href);
+    alert('網址已複製！傳給朋友一起挑戰 TOM 的預測 😎');
+  }
+}
+
+function shareMatch(id) {
+  const m = MATCHES[id];
+  const text = `TOM 預測：${m.hf}${m.hn} ${m.pred} ${m.an}${m.af}（信心 ${m.conf}%）你同意嗎？`;
+  if (navigator.share) navigator.share({ title: 'TOM 世界盃預測', text, url: location.href }).catch(()=>{});
+  else { navigator.clipboard?.writeText(text + '\n' + location.href); alert('已複製！'); }
 }
 
 const MATCHES = [
@@ -687,6 +904,14 @@ function reveal(id){
   // animate conf bar
   const fill = card.querySelector('.conf-bar-fill');
   if(fill){ setTimeout(()=>{ fill.style.width = m.conf + '%'; }, 50); }
+
+  // 逆市精選 → 特效提示
+  if (isBoldPick(m)) {
+    setTimeout(() => {
+      const badge = card.querySelector('.bold-pick-tag');
+      if (badge) badge.style.animation = 'boldPulse 0.4s ease-in-out 4';
+    }, 100);
+  }
 }
 
 function getFiltered(){
@@ -753,6 +978,20 @@ function buildScoreCol(m){
     </div>`;
 }
 
+function buildVoteRow(m) {
+  const v = getVote(m.id);
+  const ag = v==='agree', dg = v==='disagree';
+  return `<div class="vote-row" onclick="event.stopPropagation()">
+    <span class="vote-label">你的看法：</span>
+    <button class="vote-btn agree${ag?' voted':''}" onclick="castVote(${m.id},'agree')">
+      👍 同意 ${ag?'✓':''}
+    </button>
+    <button class="vote-btn disagree${dg?' voted':''}" onclick="castVote(${m.id},'disagree')">
+      👎 不同意 ${dg?'✓':''}
+    </button>
+  </div>`;
+}
+
 function buildAnalysisCol(m){
   if(m.played){
     return `<div class="analysis-col revealed">
@@ -809,10 +1048,12 @@ function render(){
         const hn = m.hn.length > 4 ? `<span class="tname sm">${m.hn}</span>` : `<span class="tname">${m.hn}</span>`;
         const an = m.an.length > 4 ? `<span class="tname sm">${m.an}</span>` : `<span class="tname">${m.an}</span>`;
         const resultCls = m.played ? (isPredCorrect(m) ? ' correct' : ' wrong') : '';
+        const boldTag = (!m.played && isBoldPick(m)) ? `<div class="bold-pick-tag">🔥 逆市重注</div>` : '';
         html += `
           <div class="match-card ${m.played?'played':'upcoming'}${resultCls}" data-id="${m.id}" onclick="openModal(${m.id})" style="cursor:pointer">
             <div class="meta-col">
               <div class="grp-badge">${m.g}</div>
+              ${boldTag}
               <div class="venue-tag">${m.venue}</div>
             </div>
             <div class="team-home"><span class="flag">${m.hf}</span>${hn}</div>
@@ -820,12 +1061,14 @@ function render(){
             <div class="team-away"><span class="flag">${m.af}</span>${an}</div>
             ${buildAnalysisCol(m)}
             ${!m.played ? buildOddsRow(m) : ''}
+            ${!m.played ? buildVoteRow(m) : ''}
           </div>`;
       });
     });
   });
 
   main.innerHTML = html;
+  updateAccuracy();
 
   // restore conf bar widths for already-revealed matches
   data.filter(m => !m.played && isRevealed(m)).forEach(m => {
@@ -1010,6 +1253,8 @@ function openModal(id) {
   let body = '';
 
   // ── 結果（已結束）or 預測（未開打）──
+  if (m.played && isPredCorrect(m)) triggerConfetti();
+
   if (m.played) {
     const correct = isPredCorrect(m);
     body += `<div>
