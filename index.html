@@ -47,23 +47,51 @@
     text-align: center;
     overflow: hidden;
   }
+  /* ── HERO SIDE TEXT (desktop) ── */
   .hero-side {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: .18em;
-    color: rgba(240,180,41,0.55);
-    white-space: nowrap;
-    pointer-events: none;
-    user-select: none;
+    display: none;
   }
-  .hero-side.left  { left: 18px; transform: translateY(-50%) rotate(180deg); }
-  .hero-side.right { right: 18px; }
-  @media (max-width: 640px) { .hero-side { display: none; } }
+  /* ── HERO MOTTO (mobile + always visible strip) ── */
+  .hero-motto {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+    margin: 4px 0 16px;
+    flex-wrap: wrap;
+  }
+  .hero-motto-item {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    color: rgba(240,180,41,0.7);
+    padding: 0 14px;
+    white-space: nowrap;
+  }
+  .hero-motto-divider {
+    width: 1px; height: 14px;
+    background: rgba(240,180,41,0.3);
+    flex-shrink: 0;
+  }
+  @media (min-width: 780px) {
+    .hero-motto { display: none; }
+    .hero-side {
+      display: block;
+      position: absolute;
+      top: 50%;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: .2em;
+      color: rgba(240,180,41,0.55);
+      white-space: nowrap;
+      pointer-events: none;
+      user-select: none;
+    }
+    .hero-side.left  { left: 32px; transform: translateY(-50%); writing-mode: vertical-lr; }
+    .hero-side.right { right: 32px; transform: translateY(-50%); writing-mode: vertical-rl; }
+  }
   .hero::before {
     content: '';
     position: absolute;
@@ -456,6 +484,11 @@
     <span class="wc">2026 FIFA 世界盃</span><br>
     <span class="wc" style="font-size:0.65em;letter-spacing:.06em">全新第二輪預測</span>
   </h1>
+  <div class="hero-motto">
+    <span class="hero-motto-item">冷門下重注，海邊住別墅</span>
+    <div class="hero-motto-divider"></div>
+    <span class="hero-motto-item">足球反著買，別墅靠大海</span>
+  </div>
   <p class="hero-sub">小組賽賽程 &amp; 比賽預測 ✦ A–L 共 12 組 ✦ 72 場比賽</p>
   <div class="hero-pills">
     <div class="pill">📅 <b>6/11</b> – <b>6/27</b></div>
