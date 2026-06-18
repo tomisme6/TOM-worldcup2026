@@ -47,6 +47,23 @@
     text-align: center;
     overflow: hidden;
   }
+  .hero-side {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .18em;
+    color: rgba(240,180,41,0.55);
+    white-space: nowrap;
+    pointer-events: none;
+    user-select: none;
+  }
+  .hero-side.left  { left: 18px; transform: translateY(-50%) rotate(180deg); }
+  .hero-side.right { right: 18px; }
+  @media (max-width: 640px) { .hero-side { display: none; } }
   .hero::before {
     content: '';
     position: absolute;
@@ -431,6 +448,8 @@
 
 <!-- HERO -->
 <header class="hero">
+  <div class="hero-side left">冷門下重注，海邊住別墅</div>
+  <div class="hero-side right">足球反著買，別墅靠大海</div>
   <div class="hero-eyebrow">USA · CANADA · MEXICO</div>
   <h1>
     <span class="tom">TOM</span><br>
