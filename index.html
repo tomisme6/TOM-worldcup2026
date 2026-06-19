@@ -433,6 +433,32 @@
     background: var(--bg3); border-radius: 10px; padding: 12px 14px;
     border-left: 3px solid var(--gold);
   }
+  /* ── 第一輪戰績區塊 ── */
+  .r1-block { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+  .r1-row {
+    display: grid; grid-template-columns: 1fr 48px 1fr;
+    align-items: center; gap: 4px;
+    background: var(--bg3); border-radius: 8px; padding: 7px 10px;
+    border-left: 3px solid var(--text3); font-size: 12px;
+  }
+  .r1-row.r1-home-win { border-left-color: var(--green); }
+  .r1-row.r1-away-win { border-left-color: var(--red); }
+  .r1-row.r1-draw     { border-left-color: var(--gold); }
+  .r1-teams { color: var(--text1); font-size: 12px; }
+  .r1-teams:last-of-type { text-align: right; }
+  .r1-score {
+    text-align: center; font-family: 'Bebas Neue', sans-serif;
+    font-size: 15px; color: var(--gold); letter-spacing: 1px;
+  }
+  .r1-note {
+    grid-column: 1 / -1; font-size: 11px; color: var(--text3);
+    margin-top: 3px; line-height: 1.5;
+  }
+  .r1-team-tips { display: flex; flex-direction: column; gap: 5px; }
+  .r1-tip {
+    font-size: 11.5px; color: var(--text2); line-height: 1.5;
+    background: rgba(240,180,41,0.06); border-radius: 7px; padding: 6px 10px;
+  }
   .modal-factors { display: flex; flex-direction: column; gap: 6px; }
   .modal-factor {
     display: flex; align-items: flex-start; gap: 8px;
@@ -1286,6 +1312,59 @@ function openModal(id) {
         </div>
       </div>
     </div>`;
+  }
+
+  // ── 第一輪戰績（僅第二輪顯示）──
+  if (m.r === 2) {
+    const r1 = MATCHES.filter(x => x.r === 1 && x.g === m.g);
+    if (r1.length) {
+      // 找出本場兩隊的第一輪表現
+      const teamComment = (team) => {
+        const match = r1.find(x => x.hn === team || x.an === team);
+        if (!match) return null;
+        const isHome = match.hn === team;
+        const opp = isHome ? match.an : match.hn;
+        const oppFlag = isHome ? match.af : match.hf;
+        const teamFlag = isHome ? match.hf : match.af;
+        const score = match.score;
+        if (!score) return { match, team, teamFlag, opp, oppFlag, score: null };
+        const [h, a] = score.split('–').map(Number);
+        const tf = isHome ? h : a, of = isHome ? a : h;
+        const result = tf > of ? '勝' : tf < of ? '負' : '平';
+        const resultCls = tf > of ? 'r1-win' : tf < of ? 'r1-lose' : 'r1-draw';
+        return { match, team, teamFlag, opp, oppFlag, score, tf, of, result, resultCls };
+      };
+      const hInfo = teamComment(m.hn);
+      const aInfo = teamComment(m.an);
+      const r1html = r1.map(x => {
+        const sc = x.score || '未知';
+        const [h, a] = x.score ? x.score.split('–').map(Number) : [0,0];
+        let cls = x.score ? (h>a?'r1-home-win':h<a?'r1-away-win':'r1-draw') : 'r1-pending';
+        return `<div class="r1-row ${cls}">
+          <span class="r1-teams">${x.hf}${x.hn}</span>
+          <span class="r1-score">${sc}</span>
+          <span class="r1-teams">${x.af}${x.an}</span>
+          <span class="r1-note">${x.note}</span>
+        </div>`;
+      }).join('');
+
+      // 產生本場兩隊的狀態評論
+      const genTip = (info) => {
+        if (!info || !info.score) return `${info?.teamFlag||''}${info?.team||''} 首輪結果未知`;
+        const arrow = info.result==='勝'?'↑':info.result==='負'?'↓':'→';
+        const mood = info.result==='勝'?'狀態火熱，挾勝利之勢出戰':info.result==='負'?'首輪落敗，背水一戰壓力極大':'首輪平手，勝負均有可能';
+        return `${info.teamFlag}${info.team} ${arrow} 首輪 ${info.tf}–${info.of} ${info.result===undefined?'':info.result}${info.opp?` vs ${info.oppFlag}${info.opp}`:''}，${mood}`;
+      };
+
+      body += `<div>
+        <div class="modal-section-label">📋 第 ${m.g} 組 第一輪戰績</div>
+        <div class="r1-block">${r1html}</div>
+        <div class="r1-team-tips">
+          <div class="r1-tip">${genTip(hInfo)}</div>
+          <div class="r1-tip">${genTip(aInfo)}</div>
+        </div>
+      </div>`;
+    }
   }
 
   // ── 核心分析 ──
