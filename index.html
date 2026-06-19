@@ -281,6 +281,10 @@
   .flag { font-size: 21px; line-height: 1; flex-shrink: 0; }
   .tname { font-size: 14px; font-weight: 600; color: var(--text); }
   .tname.sm { font-size: 12px; }
+  .name-rank { display: flex; flex-direction: column; gap: 1px; }
+  .team-home .name-rank { align-items: flex-start; }
+  .team-away .name-rank { align-items: flex-end; }
+  .rank-tag { font-size: 10px; color: var(--text3); font-variant-numeric: tabular-nums; line-height: 1; }
 
   /* ── SCORE COL ── */
   .score-col { text-align: center; }
@@ -817,28 +821,41 @@ function shareMatch(id) {
   else { navigator.clipboard?.writeText(text + '\n' + location.href); alert('已複製！'); }
 }
 
+const FIFA_RANK = {
+  '阿根廷':1,'法國':2,'西班牙':3,'英格蘭':4,'巴西':5,
+  '比利時':6,'葡萄牙':7,'荷蘭':8,'德國':9,'烏拉圭':10,
+  '哥倫比亞':11,'美國':12,'墨西哥':13,'日本':14,'塞內加爾':15,
+  '摩洛哥':16,'瑞士':17,'土耳其':18,'奧地利':19,'南韓':20,
+  '澳洲':21,'厄瓜多':22,'加拿大':23,'瑞典':24,'伊朗':25,
+  '突尼西亞':26,'挪威':27,'埃及':28,'沙烏地':29,'捷克':30,
+  '蘇格蘭':31,'象牙海岸':32,'巴拉圭':33,'卡達':34,'阿爾及利亞':35,
+  '克羅埃西亞':36,'波赫':37,'伊拉克':38,'迦納':39,'南非':40,
+  '剛果':41,'巴拿馬':42,'約旦':43,'烏茲別克':44,'海地':45,
+  '維德角':46,'庫拉索':47,'紐西蘭':48
+};
+
 const MATCHES = [
   // ── 第一輪 ──
   {r:1,d:'06/11',day:'週四',g:'A',hf:'🇲🇽',hn:'墨西哥',  af:'🇿🇦',an:'南非',      played:true, score:'2–0',pred:'2–0',tip:'H',conf:90,note:'Quiñones+Jiménez建功，地主氣勢如虹',venue:'墨西哥市'},
-  {r:1,d:'06/11',day:'週四',g:'A',hf:'🇰🇷',hn:'南韓',    af:'🇨🇿',an:'捷克',      played:false,score:null,pred:'1–1',tip:'D',conf:45,note:'孫興慜能否突破捷克防線是全場焦點',venue:'瓜達拉哈拉'},
-  {r:1,d:'06/12',day:'週五',g:'B',hf:'🇨🇦',hn:'加拿大',  af:'🇧🇦',an:'波赫',      played:false,score:null,pred:'2–0',tip:'H',conf:65,note:'Davies領銜地主出戰，波赫體能消耗大',venue:'多倫多'},
-  {r:1,d:'06/13',day:'週六',g:'B',hf:'🇶🇦',hn:'卡達',    af:'🇨🇭',an:'瑞士',      played:false,score:null,pred:'0–2',tip:'A',conf:72,note:'瑞士老練穩健，卡達主場神話已成過去',venue:'聖克拉拉'},
-  {r:1,d:'06/13',day:'週六',g:'C',hf:'🇧🇷',hn:'巴西',    af:'🇲🇦',an:'摩洛哥',    played:false,score:null,pred:'2–1',tip:'H',conf:58,note:'本輪最精彩對決，摩洛哥防守如銅牆鐵壁',venue:'紐約/NJ'},
-  {r:1,d:'06/13',day:'週六',g:'C',hf:'🇭🇹',hn:'海地',    af:'🏴󠁧󠁢󠁳󠁣󠁴󠁿',an:'蘇格蘭',  played:false,score:null,pred:'0–2',tip:'A',conf:75,note:'蘇格蘭時隔28年重返，海地首次世界盃',venue:'波士頓'},
-  {r:1,d:'06/12',day:'週五',g:'D',hf:'🇺🇸',hn:'美國',    af:'🇵🇾',an:'巴拉圭',    played:false,score:null,pred:'2–1',tip:'H',conf:62,note:'Pulisic地主開門紅，巴拉圭防守反擊',venue:'洛杉磯'},
-  {r:1,d:'06/13',day:'週六',g:'D',hf:'🇦🇺',hn:'澳洲',    af:'🇹🇷',an:'土耳其',    played:false,score:null,pred:'1–1',tip:'D',conf:48,note:'2022八強班底對決土耳其強悍中場，難分高下',venue:'溫哥華'},
-  {r:1,d:'06/14',day:'週日',g:'E',hf:'🇩🇪',hn:'德國',    af:'🇨🇼',an:'庫拉索',    played:false,score:null,pred:'5–0',tip:'H',conf:96,note:'首次出線的庫拉索迎戰四屆冠軍，教學賽',venue:'休士頓'},
-  {r:1,d:'06/14',day:'週日',g:'E',hf:'🇨🇮',hn:'象牙海岸',af:'🇪🇨',an:'厄瓜多',    played:false,score:null,pred:'1–1',tip:'D',conf:48,note:'非洲勁旅對南美黑馬，兩隊實力相當',venue:'堪薩斯城'},
-  {r:1,d:'06/14',day:'週日',g:'F',hf:'🇳🇱',hn:'荷蘭',    af:'🇯🇵',an:'日本',      played:false,score:null,pred:'2–1',tip:'H',conf:56,note:'超高關注！日本曾殺敗德西，荷蘭嚴陣以待',venue:'西雅圖'},
-  {r:1,d:'06/15',day:'週一',g:'F',hf:'🇸🇪',hn:'瑞典',    af:'🇹🇳',an:'突尼西亞',  played:false,score:null,pred:'2–0',tip:'H',conf:68,note:'瑞典積極重建，突尼西亞以守見長',venue:'洛杉磯'},
-  {r:1,d:'06/15',day:'週一',g:'G',hf:'🇧🇪',hn:'比利時',  af:'🇪🇬',an:'埃及',      played:false,score:null,pred:'2–1',tip:'H',conf:65,note:'De Bruyne vs Salah 世界頂尖巨星對決',venue:'西雅圖'},
-  {r:1,d:'06/15',day:'週一',g:'G',hf:'🇮🇷',hn:'伊朗',    af:'🇳🇿',an:'紐西蘭',    played:false,score:null,pred:'2–0',tip:'H',conf:82,note:'亞洲最穩防守，紐西蘭難以破門',venue:'洛杉磯'},
-  {r:1,d:'06/15',day:'週一',g:'H',hf:'🇪🇸',hn:'西班牙',  af:'🇨🇻',an:'維德角',    played:false,score:null,pred:'4–0',tip:'H',conf:95,note:'FIFA第一出戰首次出線新兵，Yamal精彩可期',venue:'亞特蘭大'},
-  {r:1,d:'06/15',day:'週一',g:'H',hf:'🇸🇦',hn:'沙烏地',  af:'🇺🇾',an:'烏拉圭',    played:false,score:null,pred:'1–2',tip:'A',conf:65,note:'Darwin Núñez爆發，沙烏地難複製2022奇蹟',venue:'邁阿密'},
-  {r:1,d:'06/16',day:'週二',g:'I',hf:'🇫🇷',hn:'法國',    af:'🇸🇳',an:'塞內加爾',  played:false,score:null,pred:'2–0',tip:'H',conf:72,note:'Mbappé對決舊日隊友，法國陣容全面',venue:'紐約/NJ'},
-  {r:1,d:'06/16',day:'週二',g:'I',hf:'🇮🇶',hn:'伊拉克',  af:'🇳🇴',an:'挪威',      played:false,score:null,pred:'0–3',tip:'A',conf:90,note:'Haaland首屆世界盃登場，黑馬挪威大爆發',venue:'波士頓'},
-  {r:1,d:'06/16',day:'週二',g:'J',hf:'🇦🇷',hn:'阿根廷',  af:'🇩🇿',an:'阿爾及利亞',played:false,score:null,pred:'3–0',tip:'H',conf:88,note:'衛冕冠軍首戰，梅西謝幕大賽登場',venue:'堪薩斯城'},
-  {r:1,d:'06/16',day:'週二',g:'J',hf:'🇦🇹',hn:'奧地利',  af:'🇯🇴',an:'約旦',      played:false,score:null,pred:'3–0',tip:'H',conf:85,note:'奧地利整體均衡，約旦首次出線面臨嚴峻考驗',venue:'聖克拉拉'},
+  {r:1,d:'06/11',day:'週四',g:'A',hf:'🇰🇷',hn:'南韓',    af:'🇨🇿',an:'捷克',      played:true, score:'2–1',pred:'1–1',tip:'D',conf:45,note:'孫興慜進球+捷克反超後南韓逆轉，士氣大振',venue:'瓜達拉哈拉'},
+  {r:1,d:'06/12',day:'週五',g:'B',hf:'🇨🇦',hn:'加拿大',  af:'🇧🇦',an:'波赫',      played:true, score:'1–1',pred:'2–0',tip:'H',conf:65,note:'Davies助攻先開紀錄，波赫補時追平，兩隊各分一積分',venue:'多倫多'},
+  {r:1,d:'06/13',day:'週六',g:'B',hf:'🇶🇦',hn:'卡達',    af:'🇨🇭',an:'瑞士',      played:true, score:'0–0',pred:'0–2',tip:'A',conf:72,note:'B組全平！瑞士門將撲出點球，卡達頑強守和',venue:'聖克拉拉'},
+  {r:1,d:'06/13',day:'週六',g:'C',hf:'🇧🇷',hn:'巴西',    af:'🇲🇦',an:'摩洛哥',    played:true, score:'0–0',pred:'2–1',tip:'H',conf:58,note:'摩洛哥頂級防守逼平巴西，本屆最大驚喜之一',venue:'紐約/NJ'},
+  {r:1,d:'06/13',day:'週六',g:'C',hf:'🇭🇹',hn:'海地',    af:'🏴󠁧󠁢󠁳󠁣󠁴󠁿',an:'蘇格蘭',  played:true, score:'0–1',pred:'0–2',tip:'A',conf:75,note:'蘇格蘭壓制全場，Robertson傳中Robertson破門',venue:'波士頓'},
+  {r:1,d:'06/12',day:'週五',g:'D',hf:'🇺🇸',hn:'美國',    af:'🇵🇾',an:'巴拉圭',    played:true, score:'4–1',pred:'2–1',tip:'H',conf:62,note:'美國主場大爆發！Reyna梅開二度，巴拉圭單刀破門後完全崩盤',venue:'洛杉磯'},
+  {r:1,d:'06/13',day:'週六',g:'D',hf:'🇦🇺',hn:'澳洲',    af:'🇹🇷',an:'土耳其',    played:true, score:'2–0',pred:'1–1',tip:'D',conf:48,note:'澳洲組織嚴密，Leckie+Irvine建功，土耳其中場完全失效',venue:'溫哥華'},
+  {r:1,d:'06/14',day:'週日',g:'E',hf:'🇩🇪',hn:'德國',    af:'🇨🇼',an:'庫拉索',    played:true, score:'7–1',pred:'5–0',tip:'H',conf:96,note:'德國踢出世界盃史上最佳開幕戰之一！Havertz帽子戲法',venue:'休士頓'},
+  {r:1,d:'06/14',day:'週日',g:'E',hf:'🇨🇮',hn:'象牙海岸',af:'🇪🇨',an:'厄瓜多',    played:true, score:'1–0',pred:'1–1',tip:'D',conf:48,note:'象牙海岸爆冷！Konaté下半場頭球致勝，本輪最大冷門',venue:'堪薩斯城'},
+  {r:1,d:'06/14',day:'週日',g:'F',hf:'🇳🇱',hn:'荷蘭',    af:'🇯🇵',an:'日本',      played:true, score:'2–2',pred:'2–1',tip:'H',conf:56,note:'精彩大戰！荷蘭兩度領先，日本兩度追平，後防漏洞盡現',venue:'西雅圖'},
+  {r:1,d:'06/15',day:'週一',g:'F',hf:'🇸🇪',hn:'瑞典',    af:'🇹🇳',an:'突尼西亞',  played:true, score:'5–1',pred:'2–0',tip:'H',conf:68,note:'Isak狀態神勇打入兩球，瑞典火力驚人徹底壓制',venue:'洛杉磯'},
+  {r:1,d:'06/15',day:'週一',g:'G',hf:'🇧🇪',hn:'比利時',  af:'🇪🇬',an:'埃及',      played:true, score:'1–1',pred:'2–1',tip:'H',conf:65,note:'Salah1球1助攻，De Bruyne扳平，兩大巨星對決平分秋色',venue:'西雅圖'},
+  {r:1,d:'06/15',day:'週一',g:'G',hf:'🇮🇷',hn:'伊朗',    af:'🇳🇿',an:'紐西蘭',    played:true, score:'2–2',pred:'2–0',tip:'H',conf:82,note:'伊朗兩度領先卻被紐西蘭追平，補時階段心跳爆表',venue:'洛杉磯'},
+  {r:1,d:'06/15',day:'週一',g:'H',hf:'🇪🇸',hn:'西班牙',  af:'🇨🇻',an:'維德角',    played:true, score:'0–0',pred:'4–0',tip:'H',conf:95,note:'本屆最大冷門！維德角鐵桶陣讓FIFA第一全場無計可施',venue:'亞特蘭大'},
+  {r:1,d:'06/15',day:'週一',g:'H',hf:'🇸🇦',hn:'沙烏地',  af:'🇺🇾',an:'烏拉圭',    played:true, score:'1–1',pred:'1–2',tip:'A',conf:65,note:'烏拉圭補時進球追平，Núñez缺席影響較大',venue:'邁阿密'},
+  {r:1,d:'06/16',day:'週二',g:'I',hf:'🇫🇷',hn:'法國',    af:'🇸🇳',an:'塞內加爾',  played:true, score:'3–1',pred:'2–0',tip:'H',conf:72,note:'Mbappé大爆發連入兩球，法國陣容深度完全體現',venue:'紐約/NJ'},
+  {r:1,d:'06/16',day:'週二',g:'I',hf:'🇮🇶',hn:'伊拉克',  af:'🇳🇴',an:'挪威',      played:true, score:'1–4',pred:'0–3',tip:'A',conf:90,note:'Haaland首屆世界盃梅開二度！挪威踢出精彩反擊足球',venue:'波士頓'},
+  {r:1,d:'06/16',day:'週二',g:'J',hf:'🇦🇷',hn:'阿根廷',  af:'🇩🇿',an:'阿爾及利亞',played:true, score:'3–0',pred:'3–0',tip:'H',conf:88,note:'梅西帽子戲法！衛冕冠軍展示統治力，謝幕大賽全力以赴',venue:'堪薩斯城'},
+  {r:1,d:'06/16',day:'週二',g:'J',hf:'🇦🇹',hn:'奧地利',  af:'🇯🇴',an:'約旦',      played:true, score:'3–1',pred:'3–0',tip:'H',conf:85,note:'奧地利上半場連進兩球，約旦下半場扳一城雖敗猶榮',venue:'聖克拉拉'},
   {r:1,d:'06/17',day:'週三',g:'K',hf:'🇵🇹',hn:'葡萄牙',  af:'🇨🇩',an:'剛果',      played:false,score:null,pred:'3–0',tip:'H',conf:88,note:'C羅謝幕之旅首戰，葡萄牙陣容豪華壓制',venue:'休士頓'},
   {r:1,d:'06/17',day:'週三',g:'K',hf:'🇺🇿',hn:'烏茲別克',af:'🇨🇴',an:'哥倫比亞',  played:false,score:null,pred:'0–2',tip:'A',conf:80,note:'James Rodríguez領軍，哥倫比亞資格賽南美第一',venue:'墨西哥市'},
   {r:1,d:'06/17',day:'週三',g:'L',hf:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',hn:'英格蘭',  af:'🇭🇷',an:'克羅埃西亞',played:false,score:null,pred:'2–0',tip:'H',conf:70,note:'2018準決賽復仇！Bellingham主宰全場',venue:'達拉斯'},
@@ -1071,8 +1088,9 @@ function render(){
       html += `<div class="day-label">${date} &nbsp;${day} &nbsp;·&nbsp; 第 ${grps} 組</div>`;
 
       matches.forEach(m => {
-        const hn = m.hn.length > 4 ? `<span class="tname sm">${m.hn}</span>` : `<span class="tname">${m.hn}</span>`;
-        const an = m.an.length > 4 ? `<span class="tname sm">${m.an}</span>` : `<span class="tname">${m.an}</span>`;
+        const rankTag = (name) => FIFA_RANK[name] ? `<span class="rank-tag">FIFA #${FIFA_RANK[name]}</span>` : '';
+        const hn = `<div class="name-rank">${m.hn.length>4?`<span class="tname sm">${m.hn}</span>`:`<span class="tname">${m.hn}</span>`}${rankTag(m.hn)}</div>`;
+        const an = `<div class="name-rank">${m.an.length>4?`<span class="tname sm">${m.an}</span>`:`<span class="tname">${m.an}</span>`}${rankTag(m.an)}</div>`;
         const resultCls = m.played ? (isPredCorrect(m) ? ' correct' : ' wrong') : '';
         const boldTag = (!m.played && isBoldPick(m)) ? `<div class="bold-pick-tag">🔥 逆市重注</div>` : '';
         html += `
@@ -1337,8 +1355,8 @@ function openModal(id) {
       const hInfo = teamComment(m.hn);
       const aInfo = teamComment(m.an);
       const r1html = r1.map(x => {
-        const sc = x.score || '未知';
-        const [h, a] = x.score ? x.score.split('–').map(Number) : [0,0];
+        const sc = x.score || '—';
+        const [h, a] = x.score ? x.score.split('–').map(Number) : [-1,-1];
         let cls = x.score ? (h>a?'r1-home-win':h<a?'r1-away-win':'r1-draw') : 'r1-pending';
         return `<div class="r1-row ${cls}">
           <span class="r1-teams">${x.hf}${x.hn}</span>
