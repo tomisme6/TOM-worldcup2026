@@ -437,6 +437,21 @@
     background: var(--bg3); border-radius: 10px; padding: 12px 14px;
     border-left: 3px solid var(--gold);
   }
+  /* ── 賭法建議 ── */
+  .bet-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 2px; }
+  .bet-card {
+    background: var(--bg3); border-radius: 10px; padding: 10px 12px;
+    border: 1px solid var(--border); display: flex; flex-direction: column; gap: 3px;
+  }
+  .bet-type { font-size: 10px; color: var(--text3); letter-spacing: 0.3px; }
+  .bet-rec { font-size: 17px; font-weight: 800; color: var(--gold); font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px; line-height: 1.2; }
+  .bet-stars { font-size: 12px; line-height: 1; }
+  .bet-reason { font-size: 11px; color: var(--text2); line-height: 1.45; margin-top: 2px; }
+  .bet-value-tip {
+    font-size: 11.5px; color: var(--gold); background: rgba(240,180,41,0.08);
+    border-radius: 8px; padding: 7px 10px; margin-top: 8px; line-height: 1.5;
+  }
+  .bet-disclaimer { font-size: 10px; color: var(--text3); text-align: center; margin-top: 8px; font-style: italic; }
   /* ── 第一輪戰績區塊 ── */
   .r1-block { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
   .r1-row {
@@ -1284,6 +1299,75 @@ async function fetchLiveScores() {
   }
 }
 
+// ── 賭法建議 ──
+function buildBettingSection(m) {
+  if (m.played) return '';
+  const odds = ODDS_DATA[m.hn+'|'+m.an];
+  const parts = m.pred.split('–').map(Number);
+  const hp = parts[0], ap = parts[1];
+  const total = hp + ap, diff = Math.abs(hp - ap);
+
+  // 大小球
+  let ouRec, ouStars, ouReason;
+  if (total >= 4)      { ouRec='大球 3.5'; ouStars='⭐⭐⭐'; ouReason=`預測合計 ${total} 球，強烈看大`; }
+  else if (total === 3){ ouRec='大球 2.5'; ouStars='⭐⭐';   ouReason=`預測 ${total} 球，建議押大`; }
+  else if (total === 2){ ouRec='邊緣局';   ouStars='⚠️';    ouReason=`預測 ${total} 球，大小球各半，不建議重注`; }
+  else                 { ouRec='小球 1.5'; ouStars='⭐⭐';   ouReason=`預測僅 ${total} 球，場面僵持`; }
+
+  // 讓球盤（亞盤）
+  let ahRec, ahStars, ahReason;
+  if (m.tip === 'H') {
+    if (m.conf >= 80 && diff >= 2) { ahRec='主隊 -1 球'; ahStars='⭐⭐⭐'; ahReason=`信心 ${m.conf}%，預測 ${m.pred} 大勝`; }
+    else if (m.conf >= 65)          { ahRec='主隊 -0.5 球'; ahStars='⭐⭐'; ahReason=`信心 ${m.conf}%，主場優勢明顯`; }
+    else                            { ahRec='主隊平盤';   ahStars='⭐';   ahReason='主場微優，保守選平盤保本'; }
+  } else if (m.tip === 'A') {
+    if (m.conf >= 80 && diff >= 2) { ahRec='客隊 -1 球'; ahStars='⭐⭐⭐'; ahReason=`信心 ${m.conf}%，預測 ${m.pred} 客勝`; }
+    else if (m.conf >= 65)          { ahRec='客隊 -0.5 球'; ahStars='⭐⭐'; ahReason=`信心 ${m.conf}%，客隊實力更強`; }
+    else                            { ahRec='客隊平盤';   ahStars='⭐';   ahReason='客隊微優，平盤較安全'; }
+  } else {
+    ahRec='觀望'; ahStars='⚠️'; ahReason='預測平局，讓球盤不建議下注';
+  }
+
+  // 精確比分
+  let csRec, csStars, csReason;
+  if (m.conf >= 80)      { csRec=m.pred; csStars='⭐⭐'; csReason='信心高，可小注博高賠率'; }
+  else if (m.conf >= 65) { csRec=m.pred; csStars='⭐';  csReason='中度信心，小注一試即可'; }
+  else                   { csRec='不建議'; csStars='—'; csReason='勝負難測，比分變數太大'; }
+
+  // 半場走勢
+  let htRec, htStars, htReason;
+  if (m.tip === 'H' && m.conf >= 70)      { htRec='主隊半場領先'; htStars='⭐⭐'; htReason='強隊主場通常上半場即建立優勢'; }
+  else if (m.tip === 'A' && m.conf >= 70) { htRec='客隊半場領先'; htStars='⭐';  htReason='強力客隊積極進攻搶先得分'; }
+  else if (m.tip === 'D')                 { htRec='半場平局';     htStars='⭐';  htReason='雙方謹慎，上半場平局機率高'; }
+  else                                    { htRec='不建議';       htStars='—';  htReason='局勢難料，不建議押半場走勢'; }
+
+  // 逆市提示
+  let valueTip = '';
+  if (odds) {
+    const oddsWinner = odds.h > odds.a && odds.h > odds.d ? 'H'
+                     : odds.a > odds.h && odds.a > odds.d ? 'A' : 'D';
+    if (m.tip !== oddsWinner) {
+      const favName = oddsWinner==='H' ? m.hn : oddsWinner==='A' ? m.an : '平局';
+      valueTip = `<div class="bet-value-tip">🔄 逆市提醒：賭盤主流看好「${favName}」，TOM 選擇逆市。若下注，賠率較佳但風險更高，確定再押。</div>`;
+    }
+  }
+
+  const card = (type, rec, stars, reason) =>
+    `<div class="bet-card"><div class="bet-type">${type}</div><div class="bet-rec">${rec}</div><div class="bet-stars">${stars}</div><div class="bet-reason">${reason}</div></div>`;
+
+  return `<div>
+    <div class="modal-section-label">💰 賭法建議</div>
+    <div class="bet-grid">
+      ${card('大小球', ouRec, ouStars, ouReason)}
+      ${card('讓球盤（亞盤）', ahRec, ahStars, ahReason)}
+      ${card('精確比分', csRec, csStars, csReason)}
+      ${card('半場走勢', htRec, htStars, htReason)}
+    </div>
+    ${valueTip}
+    <div class="bet-disclaimer">⚠️ 純屬分析參考，實際下注請量力而為，理性博彩</div>
+  </div>`;
+}
+
 // ── Modal ──
 function openModal(id) {
   const m = MATCHES[id];
@@ -1434,6 +1518,8 @@ function openModal(id) {
       </div>
     </div>`;
   }
+
+  body += buildBettingSection(m);
 
   document.getElementById('modal-body').innerHTML = body;
   document.getElementById('modal-backdrop').classList.add('open');
