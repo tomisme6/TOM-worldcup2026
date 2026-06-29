@@ -715,6 +715,7 @@
       <button class="gtab" data-g="J">J</button>
       <button class="gtab" data-g="K">K</button>
       <button class="gtab" data-g="L">L</button>
+      <button class="gtab" data-g="R32" style="background:rgba(240,180,41,0.15);border-color:var(--gold);color:var(--gold)">🏆 淘汰賽</button>
     </div>
     <input class="search-box" id="search" type="text" placeholder="🔍 搜尋隊名…">
   </div>
@@ -935,9 +936,27 @@ const MATCHES = [
   {r:3,d:'06/28',day:'週日',g:'K',hf:'🇨🇩',hn:'剛果',    af:'🇺🇿',an:'烏茲別克',  played:false,score:null,pred:'2–0',tip:'H',conf:80,note:'剛果必須大勝才有機會擠進最佳第三名，全線壓上；烏茲別克已淘汰雙輪無功，剛果體能和個人質素明顯佔優',venue:'達拉斯',id:61},
   {r:3,d:'06/29',day:'週一',g:'L',hf:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',hn:'英格蘭',  af:'🇵🇦',an:'巴拿馬',    played:false,score:null,pred:'4–0',tip:'H',conf:88,note:'面對墊底的巴拿馬，英格蘭正常發揮就能輕鬆過關；前鋒群迎來刷進球數的大好機會，為淘汰賽熱身備戰',venue:'亞特蘭大',id:62},
   {r:3,d:'06/29',day:'週一',g:'L',hf:'🇬🇭',hn:'迦納',    af:'🇭🇷',an:'克羅埃西亞',played:false,score:null,pred:'0–1',tip:'A',conf:55,note:'⚠️ L組最關鍵戰役！克羅埃西亞必須取勝才能晉級；Modrić+Kovačić老將班底在生死戰掌控節奏能力極強，迦納雖已確定晉級但不保證放水，預計激烈拼搶',venue:'休士頓',id:63},
+
+  // ── 淘汰賽 32強 ──
+  {r:4,d:'06/28',day:'週六',g:'R32',hf:'🇨🇦',hn:'加拿大',  af:'🇿🇦',an:'南非',      played:true, score:'1–0',pred:'1–0',tip:'H',conf:68,note:'加拿大靠Eustáquio第90+2分鐘絕殺1-0淘汰南非，寫下歷史首度晉級16強。南非神奇旅程就此畫下句點',venue:'達拉斯',id:64},
+  {r:4,d:'06/29',day:'週日',g:'R32',hf:'🇧🇷',hn:'巴西',    af:'🇯🇵',an:'日本',      played:false,score:null,pred:'2–1',tip:'H',conf:68,note:'日本防守組織是本屆最嚴密之一，但巴西個人技術差距最終決定勝負；日本極可能靠反擊得1球製造懸念，但巴西進攻火力（Vinicius+Rodrygo）最終撐起勝局。逆押日本有一定價值但風險高',venue:'洛杉磯',id:65},
+  {r:4,d:'06/29',day:'週日',g:'R32',hf:'🇩🇪',hn:'德國',    af:'🇵🇾',an:'巴拉圭',    played:false,score:null,pred:'3–0',tip:'H',conf:82,note:'德國小組賽狂砍9球攻守全面，狀態爆棚；巴拉圭擅長低位防守反擊，但德國定位球威脅＋邊路深度＋Musiala/Wirtz技術細膩，預計下半場壓倒性主導場面。本輪最穩場次之一',venue:'費城',id:66},
+  {r:4,d:'06/29',day:'週日',g:'R32',hf:'🇳🇱',hn:'荷蘭',    af:'🇲🇦',an:'摩洛哥',    played:false,score:null,pred:'1–1',tip:'A',conf:52,note:'🔥 本輪最大冷門警報！摩洛哥2022年擊敗比利時、西班牙、葡萄牙的防守基因依然強大；荷蘭進攻流暢但對付高度組織防線時容易失去耐性。TOM押摩洛哥延長賽逆市爆冷，高賠率值得小注一搏',venue:'亞特蘭大',id:67},
+  {r:4,d:'06/30',day:'週一',g:'R32',hf:'🇨🇮',hn:'象牙海岸',af:'🇳🇴',an:'挪威',      played:false,score:null,pred:'1–2',tip:'A',conf:60,note:'Haaland大賽爆發是最大關鍵——他至今已貢獻3球且持續上升；象牙海岸身體對抗與邊路衝擊力強，但挪威高位壓迫結合Haaland的絕對終結力讓客隊更有優勢。逆押挪威是本場最值得的選擇',venue:'堪薩斯城',id:68},
+  {r:4,d:'06/30',day:'週一',g:'R32',hf:'🇫🇷',hn:'法國',    af:'🇸🇪',an:'瑞典',      played:false,score:null,pred:'2–0',tip:'H',conf:80,note:'法國陣容深度是本屆最強，Mbappé+Dembélé+Thuram三線組合火力全開；瑞典Isak威脅存在但整體實力差距過大——法國防線將靠高位壓迫令瑞典難以組織反擊。穩押法國但賠率不高',venue:'紐約/NJ',id:69},
+  {r:4,d:'06/30',day:'週一',g:'R32',hf:'🇲🇽',hn:'墨西哥',  af:'🇪🇨',an:'厄瓜多',    played:false,score:null,pred:'1–0',tip:'H',conf:65,note:'墨西哥小組賽三戰全勝且一球未失，防線滴水不漏；厄瓜多攻擊火力偏弱（小組賽僅進2球）。墨西哥主場氣氛超強，守中反擊風格在此場景下極為奏效。低比分1-0最符合雙方風格',venue:'瓜達拉哈拉',id:70},
+  {r:4,d:'07/01',day:'週二',g:'R32',hf:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',hn:'英格蘭',  af:'🇨🇩',an:'剛果',      played:false,score:null,pred:'2–0',tip:'H',conf:85,note:'英格蘭陣容深度遠超剛果，Bellingham+Saka+Kane的組合在32強中首場應能輕鬆施展；剛果雖有衝擊力但防線不穩——英格蘭有望輕取兩球並為16強養精蓄銳。本輪第二穩場次',venue:'休士頓',id:71},
+  {r:4,d:'07/01',day:'週二',g:'R32',hf:'🇧🇪',hn:'比利時',  af:'🇸🇳',an:'塞內加爾',  played:false,score:null,pred:'2–1',tip:'H',conf:62,note:'比利時最後一屆黃金世代，De Bruyne+Lukaku動力強；塞內加爾5-0大勝伊拉克氣勢旺盛，身體對抗力壓全場。預計激烈膠著戰，比利時憑閱歷與個人能力微幅勝出。若入延長賽結果難料',venue:'西雅圖',id:72},
+  {r:4,d:'07/01',day:'週二',g:'R32',hf:'🇺🇸',hn:'美國',    af:'🇧🇦',an:'波赫',      played:false,score:null,pred:'2–1',tip:'H',conf:70,note:'美國主場加持且小組賽以強勢6分頭名出線；波赫身體鋒芒畢露善打硬仗，曾爆冷取積分，但美國邊路速度與陣型整體性占優。有機會進球但美國定力較強，預計美國多1球勝出',venue:'波士頓',id:73},
+  {r:4,d:'07/02',day:'週三',g:'R32',hf:'🇪🇸',hn:'西班牙',  af:'🇦🇹',an:'奧地利',    played:false,score:null,pred:'2–0',tip:'H',conf:80,note:'西班牙傳控哲學在本屆完美呈現，小組賽零失球；奧地利戰術紀律嚴明是其強項，但長時間面對西班牙高位逼搶幾乎無法保持零失球。Yamal+Nico+Pedri控場節奏一流，清晰優勢',venue:'邁阿密',id:74},
+  {r:4,d:'07/02',day:'週三',g:'R32',hf:'🇵🇹',hn:'葡萄牙',  af:'🇭🇷',an:'克羅埃西亞',played:false,score:null,pred:'1–1',tip:'H',conf:55,note:'🔥 本輪最精彩對決！C羅謝幕大賽動力超強；克羅埃西亞Modrić控場能力在大賽中依然頂尖。雙方各有進球能力，90分鐘難分勝負幾乎確定——TOM押葡萄牙在延長賽或PK大戰中勝出。高賠率但有吸引力',venue:'溫哥華',id:75},
+  {r:4,d:'07/02',day:'週三',g:'R32',hf:'🇨🇭',hn:'瑞士',    af:'🇩🇿',an:'阿爾及利亞',played:false,score:null,pred:'1–0',tip:'H',conf:62,note:'瑞士防線紀律嚴明，大賽閱歷豐富；阿爾及利亞個人技術出色且末輪以3-3逼平奧地利氣勢如虹——這場比外界預計更難打！TOM認為瑞士定力與戰術執行力略勝，低比分勝出',venue:'溫哥華',id:76},
+  {r:4,d:'07/03',day:'週四',g:'R32',hf:'🇦🇺',hn:'澳洲',    af:'🇪🇬',an:'埃及',      played:false,score:null,pred:'1–1',tip:'A',conf:52,note:'⚠️ 難以預料的膠著場！埃及以A組第一晉級，防線穩定；澳洲靠身體對抗與死球強悍，兩隊風格對撞——TOM押延長賽後埃及PK大戰勝出。兩隊均無絕對優勢，逆押埃及有合理理由',venue:'聖克拉拉',id:77},
+  {r:4,d:'07/03',day:'週四',g:'R32',hf:'🇦🇷',hn:'阿根廷',  af:'🇨🇻',an:'維德角',    played:false,score:null,pred:'3–0',tip:'H',conf:92,note:'梅西謝幕大賽必拼盡全力，阿根廷陣容是本屆最均衡強隊之一；維德角能夠晉級32強已是中小國足球奇蹟，但面對世界第一的進攻線實力差距過於懸殊。本輪最穩場次，可放心押大球',venue:'聖克拉拉',id:78},
+  {r:4,d:'07/03',day:'週四',g:'R32',hf:'🇨🇴',hn:'哥倫比亞',af:'🇬🇭',an:'迦納',      played:false,score:null,pred:'2–1',tip:'H',conf:68,note:'哥倫比亞James Rodríguez狀態本屆絕佳，攻勢足球賞心悅目；迦納身體爆發力強且邊路衝擊不俗，有能力創造機會。但哥倫比亞整體戰術更成熟，中場控制力更強，最終多1球勝出',venue:'墨西哥市',id:79},
 ];
 
-const ROUND_LABELS = {1:'第一輪（首戰）',2:'第二輪',3:'第三輪（決定性）'};
+const ROUND_LABELS = {1:'第一輪（首戰）',2:'第二輪',3:'第三輪（決定性）',4:'淘汰賽 32強'};
 const TIP_LABEL = {H:'主勝',D:'平局',A:'客勝'};
 const TIP_CLS   = {H:'tip-H',D:'tip-D',A:'tip-A'};
 const CONF_COLOR = c => c >= 80 ? '#22c55e' : c >= 60 ? '#fbbf24' : '#f87171';
@@ -1110,7 +1129,8 @@ function render(){
     Object.entries(byDate).forEach(([dk, matches]) => {
       const [date, day] = dk.split('|');
       const grps = [...new Set(matches.map(m=>m.g))].join(' · ');
-      html += `<div class="day-label">${date} &nbsp;${day} &nbsp;·&nbsp; 第 ${grps} 組</div>`;
+      const isKO = ms[0] && ms[0].r >= 4;
+      html += `<div class="day-label">${date} &nbsp;${day}${isKO ? '' : ` &nbsp;·&nbsp; 第 ${grps} 組`}</div>`;
 
       matches.forEach(m => {
         const rankTag = (name) => FIFA_RANK[name] ? `<span class="rank-tag">FIFA #${FIFA_RANK[name]}</span>` : '';
@@ -1121,7 +1141,8 @@ function render(){
         html += `
           <div class="match-card ${m.played?'played':'upcoming'}${resultCls}" data-id="${m.id}" onclick="openModal(${m.id})" style="cursor:pointer">
             <div class="meta-col">
-              <div class="grp-badge">${m.g}</div>
+              <div class="grp-badge" style="${m.r>=4?'background:var(--gold);color:#0a0e1a;font-size:9px;padding:2px 4px':''}">
+                ${m.r>=4?'32強':m.g}</div>
               ${boldTag}
               <div class="venue-tag">${m.venue}</div>
             </div>
@@ -1386,7 +1407,8 @@ function openModal(id) {
   document.getElementById('modal-teams').innerHTML =
     `${m.hf} ${m.hn} &nbsp;vs&nbsp; ${m.an} ${m.af}`;
   document.getElementById('modal-meta').textContent =
-    `第 ${m.g} 組 · ${m.d} ${m.day} · ${m.venue}`;
+    m.r >= 4 ? `淘汰賽 32強 · ${m.d} ${m.day} · ${m.venue}`
+             : `第 ${m.g} 組 · ${m.d} ${m.day} · ${m.venue}`;
 
   let body = '';
 
