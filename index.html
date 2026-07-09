@@ -649,7 +649,7 @@
   <h1>
     <span class="tom">TOM</span><br>
     <span class="wc">2026 FIFA 世界盃</span><br>
-    <span class="wc" style="font-size:0.65em;letter-spacing:.06em">全新16強預測</span>
+    <span class="wc" style="font-size:0.65em;letter-spacing:.06em">全新8強預測</span>
   </h1>
   <div class="hero-motto">
     <span class="hero-motto-item">冷門下重注，海邊住別墅</span>
@@ -717,6 +717,7 @@
       <button class="gtab" data-g="L">L</button>
       <button class="gtab" data-g="R32" style="background:rgba(240,180,41,0.15);border-color:var(--gold);color:var(--gold)">🏆 32強</button>
       <button class="gtab" data-g="R16" style="background:rgba(240,180,41,0.15);border-color:var(--gold);color:var(--gold)">⚔️ 16強</button>
+      <button class="gtab" data-g="QF" style="background:rgba(240,180,41,0.25);border-color:var(--gold);color:var(--gold);font-weight:700">🔥 8強</button>
     </div>
     <input class="search-box" id="search" type="text" placeholder="🔍 搜尋隊名…">
   </div>
@@ -959,15 +960,21 @@ const MATCHES = [
   // ── 淘汰賽 16強 ──
   {r:5,d:'07/04',day:'週五',g:'R16',hf:'🇫🇷',hn:'法國',    af:'🇵🇾',an:'巴拉圭',    played:true, score:'1–0',pred:'2–0',tip:'H',conf:78,note:'法國控制全場但攻門效率不如預期，Mbappé12碼破門1-0贏得略顯吃力——但法國防線依舊零失球！巴拉圭爆冷德國後防守極其嚴密，這1球已足夠',venue:'費城',id:80},
   {r:5,d:'07/04',day:'週五',g:'R16',hf:'🇲🇦',hn:'摩洛哥',  af:'🇨🇦',an:'加拿大',    played:true, score:'3–0',pred:'2–0',tip:'H',conf:70,note:'摩洛哥本屆最完美表現！3-0大勝加拿大，Hakimi助攻兩球，Ziyech世界波開場定調——摩洛哥是本屆最令人驚喜的球隊，準8強豪氣震驚世界',venue:'洛杉磯',id:81},
-  {r:5,d:'07/05',day:'週六',g:'R16',hf:'🇧🇷',hn:'巴西',    af:'🇳🇴',an:'挪威',      played:true, score:'4–3',pred:'2–1',tip:'H',conf:68,note:'🔥 本屆最精彩比賽！巴西4-3擊敗挪威，Haaland攻進2球，雙方你來我往打出世界盃最高分精彩賽事。巴西Vinicius帽子戲法封王，終結挪威黑馬之旅',venue:'聖克拉拉',id:82},
+  {r:5,d:'07/05',day:'週六',g:'R16',hf:'🇧🇷',hn:'巴西',    af:'🇳🇴',an:'挪威',      played:true, score:'1–2',pred:'2–1',tip:'H',conf:68,note:'💥 本屆最大黑馬！挪威Haaland兩球擊沉巴西1-2，TOM預測方向完全顛倒！Haaland在最重要的比賽貢獻最頂尖表現，挪威歷史首次世界盃8強！',venue:'聖克拉拉',id:82},
   {r:5,d:'07/05',day:'週六',g:'R16',hf:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',hn:'英格蘭',  af:'🇲🇽',an:'墨西哥',    played:true, score:'2–1',pred:'2–0',tip:'H',conf:65,note:'英格蘭比預想更艱難！墨西哥在主場球迷面前拼盡全力，1球追平後讓英格蘭膽戰心驚，Bellingham關鍵進球定乾坤，英格蘭2-1晉級準8強',venue:'達拉斯',id:83},
-  {r:5,d:'07/06',day:'週日',g:'R16',hf:'🇪🇸',hn:'西班牙',  af:'🇵🇹',an:'葡萄牙',    played:false,score:null,pred:'2–0',tip:'H',conf:65,note:'🔥 伊比利亞半島超級德比！西班牙本屆全程零失球是本屆最驚人數據；C羅謝幕大賽求榮耀，但西班牙Yamal/Nico/Pedri三角地帶讓任何球隊都無法有效壓迫。TOM看好西班牙技術性主導勝出，但葡萄牙強攻有機會',venue:'邁阿密',id:84},
-  {r:5,d:'07/06',day:'週日',g:'R16',hf:'🇧🇪',hn:'比利時',  af:'🇺🇸',an:'美國',      played:false,score:null,pred:'1–2',tip:'A',conf:60,note:'🏠 美國主場最強援！比利時打了一場延長賽體力嚴重消耗；美國4場主場比賽全勝且零失球，全場球迷加油是最大武器。De Bruyne任意球是最大威脅，但TOM押美國本土優勢在這關鍵場次發揮最大價值',venue:'洛杉磯',id:85},
-  {r:5,d:'07/07',day:'週一',g:'R16',hf:'🇦🇷',hn:'阿根廷',  af:'🇪🇬',an:'埃及',      played:false,score:null,pred:'2–0',tip:'H',conf:75,note:'差點被淘汰的阿根廷必然大幅調整——梅西與教練組在維德角後一定有深刻反省；埃及防守紮實但缺乏真正得分能力，僅靠PK晉級說明進攻有限。阿根廷全程主控，2球差距合理，TOM看好梅西謝幕之旅繼續',venue:'亞特蘭大',id:86},
-  {r:5,d:'07/07',day:'週一',g:'R16',hf:'🇨🇭',hn:'瑞士',    af:'🇨🇴',an:'哥倫比亞',  played:false,score:null,pred:'1–2',tip:'A',conf:58,note:'🔥 本輪最難預測！瑞士防守嚴密且大賽閱歷豐富；但哥倫比亞James Rodríguez本屆狀態堪稱一流，進攻手段多元且創造力驚人。TOM逆市押哥倫比亞進攻質量最終突破瑞士防線，高賠率值得小注一搏',venue:'紐約/NJ',id:87},
+  {r:5,d:'07/06',day:'週日',g:'R16',hf:'🇪🇸',hn:'西班牙',  af:'🇵🇹',an:'葡萄牙',    played:true, score:'2–1',pred:'2–0',tip:'H',conf:65,note:'西班牙2-1淘汰葡萄牙，Yamal再次成為全場最亮眼焦點；C羅攻進1球讓比賽一度緊張，但西班牙防線最終守住——西班牙晉級8強無懸念',venue:'邁阿密',id:84},
+  {r:5,d:'07/06',day:'週日',g:'R16',hf:'🇧🇪',hn:'比利時',  af:'🇺🇸',an:'美國',      played:true, score:'2–2',pred:'1–2',tip:'A',conf:60,note:'⚠️ 比利時PK大戰擊敗主場美國！Onana傷缺的比利時竟在主場球迷最瘋狂的時刻2-2拖入PK賽勝出，De Bruyne任意球果然是關鍵，美國主場優勢最終不敵比利時臨場老辣',venue:'洛杉磯',id:85},
+  {r:5,d:'07/07',day:'週一',g:'R16',hf:'🇦🇷',hn:'阿根廷',  af:'🇪🇬',an:'埃及',      played:true, score:'3–2',pred:'2–0',tip:'H',conf:75,note:'🎭 不可思議的逆轉！阿根廷0-2落後埃及，梅西在最後20分鐘帶隊瘋狂追分3-2絕殺——這才是梅西謝幕大賽的真正意義，奇蹟逆轉震驚全球',venue:'亞特蘭大',id:86},
+  {r:5,d:'07/07',day:'週一',g:'R16',hf:'🇨🇭',hn:'瑞士',    af:'🇨🇴',an:'哥倫比亞',  played:true, score:'1–1',pred:'1–2',tip:'A',conf:58,note:'TOM押哥倫比亞落空！1-1拖入PK賽後瑞士靠門將神撲擊敗哥倫比亞晉級8強，James Rodríguez貢獻1球但最終憾負，瑞士再次展現歐洲老牌球隊大賽心理素質',venue:'紐約/NJ',id:87},
+
+  // ── 淘汰賽 8強 ──
+  {r:6,d:'07/09',day:'週三',g:'QF',hf:'🇫🇷',hn:'法國',    af:'🇲🇦',an:'摩洛哥',    played:false,score:null,pred:'1–0',tip:'H',conf:62,note:'🔥 本屆最具話題性的8強對決！法國本屆5戰全勝未失1球，傳聞Tchouaméni肌肉傷待確認——若缺陣則中場防守露出缺口；摩洛哥連兩屆世界盃8強，防守體系是本屆最難攻破的。2022年摩洛哥曾輸給法國0-2，這次有復仇動機+Saibari若復出威脅更大。TOM押法國低比分險勝，但摩洛哥PK大戰取勝機率同樣高',venue:'波士頓',id:88},
+  {r:6,d:'07/10',day:'週四',g:'QF',hf:'🇧🇪',hn:'比利時',  af:'🇪🇸',an:'西班牙',    played:false,score:null,pred:'0–2',tip:'A',conf:72,note:'西班牙是本屆最完整球隊——6戰全勝未失球的數據令人咋舌！Yamal+Nico Williams+Pedri的三角組合是本屆最頂尖的中前場聯動；比利時Onana ACL傷缺讓中場防守大幅削弱，且已打兩場延長賽體力嚴重消耗。De Bruyne若能創造1-2個機會尚有懸念，但整體預計西班牙主導場面',venue:'洛杉磯',id:89},
+  {r:6,d:'07/11',day:'週五',g:'QF',hf:'🇳🇴',hn:'挪威',    af:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',an:'英格蘭',    played:false,score:null,pred:'1–1',tip:'A',conf:55,note:'⚠️ 本輪最難預測！Haaland本屆7球是無可爭議的最佳射手，挪威整個進攻體系就是圍繞他建立；英格蘭Bellingham本屆4場皆進球（大賽史上最強連續進球之一），但Henderson腕傷缺陣、且5名英格蘭球員處於半決賽停賽危機（含Bellingham）。比賽預計高度膠著，TOM押英格蘭PK大戰靠冷靜晉級，但任何結果都不奇怪',venue:'邁阿密',id:90},
+  {r:6,d:'07/11',day:'週五',g:'QF',hf:'🇦🇷',hn:'阿根廷',  af:'🇨🇭',an:'瑞士',      played:false,score:null,pred:'2–0',tip:'H',conf:72,note:'阿根廷從兩場驚險中學到教訓——被逼0-2後梅西帶領3-2逆轉埃及的劇情讓全世界起雞皮疙瘩！瑞士穩健但進攻能力有限（PK晉級說明無力正規時間打開局面）；阿根廷此戰預計更加謹慎有序，不再出現前幾輪的被動局面。Manzambi傷缺讓瑞士進攻更受限，梅西在半決賽前最後高強度磨刀場',venue:'堪薩斯城',id:91},
 ];
 
-const ROUND_LABELS = {1:'第一輪（首戰）',2:'第二輪',3:'第三輪（決定性）',4:'淘汰賽 32強',5:'淘汰賽 16強'};
+const ROUND_LABELS = {1:'第一輪（首戰）',2:'第二輪',3:'第三輪（決定性）',4:'淘汰賽 32強',5:'淘汰賽 16強',6:'淘汰賽 8強（準決賽）'};
 const TIP_LABEL = {H:'主勝',D:'平局',A:'客勝'};
 const TIP_CLS   = {H:'tip-H',D:'tip-D',A:'tip-A'};
 const CONF_COLOR = c => c >= 80 ? '#22c55e' : c >= 60 ? '#fbbf24' : '#f87171';
